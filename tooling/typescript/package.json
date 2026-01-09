@@ -1,0 +1,6 @@
+{
+  "name": "@mino/typescript",
+  "description": "TypeScript Configuration",
+  "version": "0.0.0",
+  "private": true
+}
