@@ -2,17 +2,21 @@
   "name": "mino",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "tooling/*"
+  ],
   "scripts": {
     "dev": "bun run --filter @mino/web dev",
     "build": "bun run --filter @mino/web build",
     "db:gen": "bun run --filter @mino/db generate",
-    "db:push": "bun run --filter @mino/db push"
+    "db:push": "bun run --filter @mino/db push",
+    "format": "bun run --filter '*' format",
+    "lint": "bun run --filter '*' lint"
+  },
+  "devDependencies": {
+    "@mino/eslint": "*"
   },
   "packageManager": "bun@1.3.1"
 }

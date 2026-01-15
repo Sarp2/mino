@@ -1,0 +1,25 @@
+{
+    "name": "@mino/prettier",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "exports": {
+        ".": "./index.js"
+    },
+    "scripts": {
+        "typecheck": "tsc --noEmit",
+        "format": "eslint --fix ."
+    },
+    "dependencies": {
+        "@ianvs/prettier-plugin-sort-imports": "^4.4.1",
+        "prettier": "^3.3.3",
+        "prettier-plugin-tailwindcss": "^0.6.11"
+    },
+    "devDependencies": {
+        "@mino/eslint": "*",
+        "@mino/typescript": "*",
+        "@types/node": "^20.0.0",
+        "typescript": "^5.5.4"
+    },
+    "prettier": "./index.js"
+}
