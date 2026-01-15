@@ -2,7 +2,7 @@ import nextPlugin from '@next/eslint-plugin-next';
 import onlyWarn from 'eslint-plugin-only-warn';
 import { defineConfig } from 'eslint/config';
 
-export const restrictEnvAccess = defineConfig(
+export default defineConfig([
     { ignores: ['**/env.ts', '**/.env'] },
     {
         files: ['**/*.js', '**/*.ts', '**/*.tsx'],
@@ -27,10 +27,6 @@ export const restrictEnvAccess = defineConfig(
             ],
         },
     },
-);
-
-/** @type {Awaited<import('typescript-eslint').Config>} */
-export default [
     {
         files: ['**/*.ts', '**/*.tsx'],
         plugins: {
@@ -43,4 +39,4 @@ export default [
             ...nextPlugin.configs['core-web-vitals'].rules,
         },
     },
-];
+]);

@@ -1,4 +1,4 @@
-import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
 import prettierConfigPlugin from 'eslint-config-prettier';
@@ -6,12 +6,17 @@ import importPlugin from 'eslint-plugin-import';
 import * as jsoncPlugin from 'eslint-plugin-jsonc';
 import onlyWarn from 'eslint-plugin-only-warn';
 import prettierPlugin from 'eslint-plugin-prettier';
+import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
 
 import prettierConfig from '@mino/prettier';
 
-export default tseslint.config(
-    includeIgnoreFile(path.join(import.meta.dirname, '../../.gitignore')),
+const gitignorePath = fileURLToPath(
+    new URL('../../.gitignore', import.meta.url),
+);
+
+export default defineConfig([
+    includeIgnoreFile(gitignorePath, 'Root gitignore file'),
     {
         ignores: [
             '**/*.config.js',
@@ -70,4 +75,4 @@ export default tseslint.config(
         linterOptions: { reportUnusedDisableDirectives: true },
         languageOptions: { parserOptions: { projectService: true } },
     },
-);
+]);
