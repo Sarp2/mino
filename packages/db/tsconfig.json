@@ -1,0 +1,8 @@
+{
+  "extends": "@mino/typescript/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./src/*"],
+    },
+  },
+}
