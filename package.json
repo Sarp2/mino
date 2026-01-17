@@ -13,7 +13,8 @@
     "db:gen": "bun run --filter @mino/db generate",
     "db:push": "bun run --filter @mino/db push",
     "format": "bun run --filter '*' format",
-    "lint": "bun run --filter '*' lint"
+    "lint": "bun run --filter '*' lint",
+    "typecheck": "bun run --filter '*' typecheck"
   },
   "devDependencies": {
     "@mino/eslint": "*"
