@@ -13,16 +13,13 @@ reviews:
       - "*"
 
   # Review configuration
-  profile: chill
+  profile: assertive
 
   # Request changes for critical issues
   request_changes_workflow: true
 
   # High-level summary
   high_level_summary: true
-
-  # Poem in review summary
-  poem: true
 
   # Review status comment
   review_status: true
