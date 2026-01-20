@@ -11,9 +11,9 @@
         "format": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "db:gen": "drizzle-kit generate",
-        "db:push": "drizzle-kit push",
+        "db:push": "bun --env-file=../../.env drizzle-kit push",
+        "db:migrate": "bun --env-file=../../.env drizzle-kit migrate",
         "db:studio": "drizzle-kit studio",
-        "db:migrate": "drizzle-kit migrate",
         "db:drop": "drizzle-kit drop"
     },
     "dependencies": {
