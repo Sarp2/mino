@@ -1,8 +1,8 @@
 {
-  "extends": "@mino/typescript/base.json",
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"],
-    },
-  },
+    "extends": "@mino/typescript/base.json",
+    "compilerOptions": {
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    }
 }

@@ -1,0 +1,42 @@
+import { relations } from 'drizzle-orm';
+import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { createInsertSchema } from 'drizzle-zod';
+
+import { projects } from '../project/project';
+import { users } from './user';
+
+export const userProjects = pgTable(
+    'user_projects',
+    {
+        userId: uuid('user_id')
+            .notNull()
+            .references(() => users.id, {
+                onDelete: 'cascade',
+                onUpdate: 'cascade',
+            }),
+        projectId: uuid('projectId')
+            .notNull()
+            .references(() => projects.id, {
+                onDelete: 'cascade',
+                onUpdate: 'cascade',
+            }),
+        createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+    },
+    (table) => [primaryKey({ columns: [table.userId, table.projectId] })],
+);
+
+export const userProjectsRelations = relations(userProjects, ({ one }) => ({
+    user: one(users, {
+        fields: [userProjects.userId],
+        references: [users.id],
+    }),
+    project: one(projects, {
+        fields: [userProjects.projectId],
+        references: [projects.id],
+    }),
+}));
+
+export const userProjectInsertSchema = createInsertSchema(userProjects);
+
+export type UserProject = typeof userProjects.$inferSelect;
+export type newUserProject = typeof userProjects.$inferInsert;
