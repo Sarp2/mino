@@ -26,6 +26,7 @@ export const userCanvases = pgTable(
     },
     (table) => [primaryKey({ columns: [table.userId, table.canvasId] })],
 );
+).enableRLS();
 
 export const userCanvasesRelations = relations(userCanvases, ({ one }) => ({
     user: one(users, {

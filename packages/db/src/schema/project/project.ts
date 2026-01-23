@@ -28,6 +28,7 @@ export const projects = pgTable('projects', {
         withTimezone: true,
     }),
 });
+}).enableRLS();
 
 export const projectRelations = relations(projects, ({ one, many }) => ({
     canvas: one(canvases, {

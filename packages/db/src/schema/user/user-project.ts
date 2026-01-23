@@ -24,6 +24,7 @@ export const userProjects = pgTable(
     },
     (table) => [primaryKey({ columns: [table.userId, table.projectId] })],
 );
+).enableRLS();
 
 export const userProjectsRelations = relations(userProjects, ({ one }) => ({
     user: one(users, {
