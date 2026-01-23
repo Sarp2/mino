@@ -25,7 +25,6 @@ export const userCanvases = pgTable(
         y: numeric('y').notNull(),
     },
     (table) => [primaryKey({ columns: [table.userId, table.canvasId] })],
-);
 ).enableRLS();
 
 export const userCanvasesRelations = relations(userCanvases, ({ one }) => ({
@@ -44,3 +43,4 @@ export const userCanvasUpdateSchema = createUpdateSchema(userCanvases);
 
 export type UserCanvas = typeof userCanvases.$inferSelect;
 export type newUserCanvas = typeof userCanvases.$inferInsert;
+export type NewUserCanvas = typeof userCanvases.$inferInsert;

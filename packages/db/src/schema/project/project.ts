@@ -11,6 +11,7 @@ export const projects = pgTable('projects', {
 
     // metadata
     name: varchar('text').notNull(),
+    name: varchar('name').notNull(),
     description: text('description'),
     tags: varchar('tags').array().default([]),
     createdAt: timestamp('created_at', { withTimezone: true })
@@ -27,7 +28,6 @@ export const projects = pgTable('projects', {
     updatedPreviewImgAt: timestamp('updated_preview_img_at', {
         withTimezone: true,
     }),
-});
 }).enableRLS();
 
 export const projectRelations = relations(projects, ({ one, many }) => ({

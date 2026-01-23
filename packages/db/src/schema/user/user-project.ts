@@ -15,6 +15,7 @@ export const userProjects = pgTable(
                 onUpdate: 'cascade',
             }),
         projectId: uuid('projectId')
+        projectId: uuid('project_id')
             .notNull()
             .references(() => projects.id, {
                 onDelete: 'cascade',
@@ -41,3 +42,4 @@ export const userProjectInsertSchema = createInsertSchema(userProjects);
 
 export type UserProject = typeof userProjects.$inferSelect;
 export type newUserProject = typeof userProjects.$inferInsert;
+export type NewUserProject = typeof userProjects.$inferInsert;

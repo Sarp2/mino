@@ -1,4 +1,5 @@
 project_id="miro-web"
+project_id="mino-web"
 
 [api]
 enabled = true

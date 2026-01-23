@@ -16,10 +16,12 @@ export const users = pgTable('users', {
         .defaultNow()
         .notNull(),
     updatedAt: timestamp('created_at', { withTimezone: true })
+    updatedAt: timestamp('updated_at', { withTimezone: true })
         .defaultNow()
         .notNull(),
     stripeCustomerId: text('stripe_customer_id'),
     githubInstallationId: text('gihtub_installation_id'),
+    github_installation_id: text('gihtub_installation_id'),
 }).enableRLS();
 
 export const usersRelations = relations(users, ({ many }) => ({

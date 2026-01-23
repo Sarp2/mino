@@ -21,6 +21,7 @@ export const branches = pgTable(
         id: uuid('id').primaryKey().defaultRandom(),
         projectId: uuid('id')
             .primaryKey()
+        projectId: uuid('project_id')
             .notNull()
             .references(() => projects.id, {
                 onDelete: 'cascade',
