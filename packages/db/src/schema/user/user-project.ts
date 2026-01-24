@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, primaryKey, timestamp, uuid } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
+import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 
 import { projects } from '../project/project';
 import { users } from './user';
@@ -37,6 +37,7 @@ export const userProjectsRelations = relations(userProjects, ({ one }) => ({
 }));
 
 export const userProjectInsertSchema = createInsertSchema(userProjects);
+export const userProjectUpdateSchema = createUpdateSchema(userProjects);
 
 export type UserProject = typeof userProjects.$inferSelect;
 export type NewUserProject = typeof userProjects.$inferInsert;

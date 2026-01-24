@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, uuid } from 'drizzle-orm/pg-core';
-import { createUpdateSchema } from 'drizzle-zod';
+import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 
 import { frames } from '../frame/frames';
 import { projects } from '../project/project';
@@ -25,6 +25,7 @@ export const canvasRelations = relations(canvases, ({ one, many }) => ({
 }));
 
 export const canvasUpdateSchema = createUpdateSchema(canvases);
+export const canvasInsertSchema = createInsertSchema(canvases);
 
 export type Canvas = typeof canvases.$inferSelect;
 export type newCanvas = typeof canvases.$inferInsert;
