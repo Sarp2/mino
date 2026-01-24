@@ -19,8 +19,6 @@ export const branches = pgTable(
     'branches',
     {
         id: uuid('id').primaryKey().defaultRandom(),
-        projectId: uuid('id')
-            .primaryKey()
         projectId: uuid('project_id')
             .notNull()
             .references(() => projects.id, {

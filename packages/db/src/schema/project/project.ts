@@ -10,7 +10,6 @@ export const projects = pgTable('projects', {
     id: uuid('id').primaryKey().defaultRandom(),
 
     // metadata
-    name: varchar('text').notNull(),
     name: varchar('name').notNull(),
     description: text('description'),
     tags: varchar('tags').array().default([]),

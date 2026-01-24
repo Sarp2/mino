@@ -14,7 +14,6 @@ export const userProjects = pgTable(
                 onDelete: 'cascade',
                 onUpdate: 'cascade',
             }),
-        projectId: uuid('projectId')
         projectId: uuid('project_id')
             .notNull()
             .references(() => projects.id, {
@@ -24,7 +23,6 @@ export const userProjects = pgTable(
         createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
     },
     (table) => [primaryKey({ columns: [table.userId, table.projectId] })],
-);
 ).enableRLS();
 
 export const userProjectsRelations = relations(userProjects, ({ one }) => ({
