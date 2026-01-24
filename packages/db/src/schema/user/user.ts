@@ -6,7 +6,7 @@ import { userCanvases } from './user-canvas';
 import { userProjects } from './user-project';
 
 export const users = pgTable('users', {
-    id: uuid().primaryKey(),
+    id: uuid('id').primaryKey(),
     firstName: text('first_name'),
     lastName: text('last_name'),
     displayName: text('display_name'),
@@ -19,8 +19,7 @@ export const users = pgTable('users', {
         .defaultNow()
         .notNull(),
     stripeCustomerId: text('stripe_customer_id'),
-    githubInstallationId: text('gihtub_installation_id'),
-    github_installation_id: text('gihtub_installation_id'),
+    githubInstallationId: text('github_installation_id'),
 }).enableRLS();
 
 export const usersRelations = relations(users, ({ many }) => ({
