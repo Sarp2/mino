@@ -42,5 +42,4 @@ export const userCanvasInsertSchema = createInsertSchema(userCanvases);
 export const userCanvasUpdateSchema = createUpdateSchema(userCanvases);
 
 export type UserCanvas = typeof userCanvases.$inferSelect;
-export type newUserCanvas = typeof userCanvases.$inferInsert;
 export type NewUserCanvas = typeof userCanvases.$inferInsert;

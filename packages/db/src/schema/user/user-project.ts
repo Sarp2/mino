@@ -39,5 +39,4 @@ export const userProjectsRelations = relations(userProjects, ({ one }) => ({
 export const userProjectInsertSchema = createInsertSchema(userProjects);
 
 export type UserProject = typeof userProjects.$inferSelect;
-export type newUserProject = typeof userProjects.$inferInsert;
 export type NewUserProject = typeof userProjects.$inferInsert;
