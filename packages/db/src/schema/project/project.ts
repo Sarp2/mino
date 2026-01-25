@@ -4,6 +4,7 @@ import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 import z from 'zod';
 
 import { canvases } from '../canvas/canvas';
+import { userProjects } from '../user/user-project';
 import { branches, PROJECT_BRANCH_RELATION_NAME } from './branch';
 
 export const projects = pgTable('projects', {
@@ -34,6 +35,7 @@ export const projectRelations = relations(projects, ({ one, many }) => ({
         fields: [projects.id],
         references: [canvases.projectId],
     }),
+    userProjects: many(userProjects),
     branches: many(branches, {
         relationName: PROJECT_BRANCH_RELATION_NAME,
     }),
@@ -45,4 +47,4 @@ export const projectUpdateSchema = createUpdateSchema(projects, {
 });
 
 export type Project = typeof projects.$inferSelect;
-export type newProject = typeof projects.$inferInsert;
+export type NewProject = typeof projects.$inferInsert;

@@ -8,7 +8,7 @@ import { branches } from '../project/branch';
 
 export const frames = pgTable('frames', {
     id: uuid('id').primaryKey().defaultRandom(),
-    canvasId: uuid('canvasId')
+    canvasId: uuid('canvas_id')
         .notNull()
         .references(() => canvases.id, {
             onDelete: 'cascade',
@@ -44,4 +44,4 @@ export const frameUpdateSchema = createUpdateSchema(frames, {
 });
 
 export type Frame = typeof frames.$inferSelect;
-export type newFrame = typeof frames.$inferInsert;
+export type NewFrame = typeof frames.$inferInsert;

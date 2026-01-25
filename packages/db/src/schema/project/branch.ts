@@ -9,7 +9,7 @@ import {
     uuid,
     varchar,
 } from 'drizzle-orm/pg-core';
-import { createInsertSchema } from 'drizzle-zod';
+import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 import z from 'zod';
 
 import { frames } from '../frame/frames';
@@ -65,9 +65,9 @@ export const branchRelations = relations(branches, ({ one, many }) => ({
 }));
 
 export const branchInsertSchema = createInsertSchema(branches);
-export const branchUpdateSchema = createInsertSchema(branches, {
+export const branchUpdateSchema = createUpdateSchema(branches, {
     id: z.uuid(),
 });
 
 export type Branch = typeof branches.$inferSelect;
-export type newBranch = typeof branches.$inferInsert;
+export type NewBranch = typeof branches.$inferInsert;

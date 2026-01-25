@@ -4,10 +4,11 @@ import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 
 import { frames } from '../frame/frames';
 import { projects } from '../project/project';
+import { userCanvases } from '../user/user-canvas';
 
 export const canvases = pgTable('canvas', {
     id: uuid('id').primaryKey().defaultRandom(),
-    projectId: uuid('projectId')
+    projectId: uuid('project_id')
         .notNull()
         .references(() => projects.id, {
             onDelete: 'cascade',
@@ -17,7 +18,7 @@ export const canvases = pgTable('canvas', {
 
 export const canvasRelations = relations(canvases, ({ one, many }) => ({
     frames: many(frames),
-    // userCanvases: many(userCan),
+    userCanvases: many(userCanvases),
     project: one(projects, {
         fields: [canvases.projectId],
         references: [projects.id],
@@ -28,4 +29,4 @@ export const canvasUpdateSchema = createUpdateSchema(canvases);
 export const canvasInsertSchema = createInsertSchema(canvases);
 
 export type Canvas = typeof canvases.$inferSelect;
-export type newCanvas = typeof canvases.$inferInsert;
+export type NewCanvas = typeof canvases.$inferInsert;
