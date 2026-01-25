@@ -1,5 +1,5 @@
 {
-  "id": "3a097624-393f-4922-9ae9-8986580d4783",
+  "id": "0f27c4cf-08b1-45f9-8abd-caa012ef052c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,8 +15,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "projectId": {
-          "name": "projectId",
+        "project_id": {
+          "name": "project_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -24,12 +24,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "canvas_projectId_projects_id_fk": {
-          "name": "canvas_projectId_projects_id_fk",
+        "canvas_project_id_projects_id_fk": {
+          "name": "canvas_project_id_projects_id_fk",
           "tableFrom": "canvas",
           "tableTo": "projects",
           "columnsFrom": [
-            "projectId"
+            "project_id"
           ],
           "columnsTo": [
             "id"
@@ -55,8 +55,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "canvasId": {
-          "name": "canvasId",
+        "canvas_id": {
+          "name": "canvas_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -100,12 +100,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "frames_canvasId_canvas_id_fk": {
-          "name": "frames_canvasId_canvas_id_fk",
+        "frames_canvas_id_canvas_id_fk": {
+          "name": "frames_canvas_id_canvas_id_fk",
           "tableFrom": "frames",
           "tableTo": "canvas",
           "columnsFrom": [
-            "canvasId"
+            "canvas_id"
           ],
           "columnsTo": [
             "id"
@@ -141,6 +141,13 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
           "notNull": true
         },
         "name": {
@@ -199,7 +206,7 @@
           "name": "branches_project_id_idx",
           "columns": [
             {
-              "expression": "id",
+              "expression": "project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -214,7 +221,7 @@
           "name": "branches_name_per_project_ux",
           "columns": [
             {
-              "expression": "id",
+              "expression": "project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -235,7 +242,7 @@
           "name": "branches_default_per_project_ux",
           "columns": [
             {
-              "expression": "id",
+              "expression": "project_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -249,12 +256,12 @@
         }
       },
       "foreignKeys": {
-        "branches_id_projects_id_fk": {
-          "name": "branches_id_projects_id_fk",
+        "branches_project_id_projects_id_fk": {
+          "name": "branches_project_id_projects_id_fk",
           "tableFrom": "branches",
           "tableTo": "projects",
           "columnsFrom": [
-            "id"
+            "project_id"
           ],
           "columnsTo": [
             "id"
@@ -280,8 +287,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "text": {
-          "name": "text",
+        "name": {
+          "name": "name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
@@ -344,7 +351,7 @@
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.users": {
       "name": "users",
@@ -393,14 +400,21 @@
           "notNull": true,
           "default": "now()"
         },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
         "stripe_customer_id": {
           "name": "stripe_customer_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "gihtub_installation_id": {
-          "name": "gihtub_installation_id",
+        "github_installation_id": {
+          "name": "github_installation_id",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -409,6 +423,151 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.user_canvases": {
+      "name": "user_canvases",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "canvas_id": {
+          "name": "canvas_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "scale": {
+          "name": "scale",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "x": {
+          "name": "x",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "y": {
+          "name": "y",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_canvases_user_id_users_id_fk": {
+          "name": "user_canvases_user_id_users_id_fk",
+          "tableFrom": "user_canvases",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "user_canvases_canvas_id_canvas_id_fk": {
+          "name": "user_canvases_canvas_id_canvas_id_fk",
+          "tableFrom": "user_canvases",
+          "tableTo": "canvas",
+          "columnsFrom": [
+            "canvas_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_canvases_user_id_canvas_id_pk": {
+          "name": "user_canvases_user_id_canvas_id_pk",
+          "columns": [
+            "user_id",
+            "canvas_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
+    "public.user_projects": {
+      "name": "user_projects",
+      "schema": "",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "user_projects_user_id_users_id_fk": {
+          "name": "user_projects_user_id_users_id_fk",
+          "tableFrom": "user_projects",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "user_projects_project_id_projects_id_fk": {
+          "name": "user_projects_project_id_projects_id_fk",
+          "tableFrom": "user_projects",
+          "tableTo": "projects",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "user_projects_user_id_project_id_pk": {
+          "name": "user_projects_user_id_project_id_pk",
+          "columns": [
+            "user_id",
+            "project_id"
+          ]
+        }
+      },
       "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
