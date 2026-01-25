@@ -1,0 +1,9 @@
+{
+    "extends": "@mino/typescript/base.json",
+    "compilerOptions": {
+        "moduleResolution": "bundler",
+        "allowImportingTsExtensions": true,
+        "verbatimModuleSyntax": true,
+        "noEmit": true,
+    }
+}

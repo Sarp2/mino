@@ -1,0 +1,31 @@
+{
+    "name": "@mino/db",
+    "description": "Drizzle database schema",
+    "version": "0.0.0",
+    "private": true,
+    "type": "module",
+    "main": "./src/index.ts",
+    "types": "./src/index.ts",
+    "scripts": {
+        "lint": "eslint . --max-warnings 0",
+        "format": "eslint --fix .",
+        "typecheck": "tsc --noEmit",
+        "db:gen": "drizzle-kit generate",
+        "db:push": "bun --env-file=../../.env drizzle-kit push",
+        "db:migrate": "bun --env-file=../../.env drizzle-kit migrate",
+        "db:studio": "drizzle-kit studio",
+        "db:drop": "drizzle-kit drop"
+    },
+    "dependencies": {
+        "dotenv": "^17.2.1",
+        "drizzle-orm": "^0.44.7",
+        "drizzle-zod": "^0.8.3",
+        "uuid": "^11.1.0",
+        "zod": "^4.3.5"
+    },
+    "devDependencies": {
+        "@mino/eslint": "*",
+        "drizzle-kit": "^0.31.4",
+        "typescript": "^5.8.2"
+    }
+}
