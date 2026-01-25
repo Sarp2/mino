@@ -1,15 +1,15 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
+import { SQL } from 'bun';
+import { drizzle } from 'drizzle-orm/bun-sql';
 
 import * as schema from '@mino/db/src/schema';
 
 const globalFordb = globalThis as unknown as {
-    conn: postgres.Sql | undefined;
+    conn: SQL | undefined;
 };
 
 const conn =
     globalFordb.conn ??
-    postgres(process.env.SUPABASE_DATABASE_URL!, { prepare: false });
+    new SQL(process.env.SUPABASE_DATABASE_URL!, { prepare: false });
 
 if (process.env.NODE_ENV !== 'production') {
     globalFordb.conn = conn;
