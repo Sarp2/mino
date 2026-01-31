@@ -1,0 +1,16 @@
+{
+    "name": "@mino/web",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "bun --filter '@mino/web-client' --filter '@mino/web-preload' dev",
+        "dev:client": "bun --filter @mino/web-client dev"
+    },
+    "devDependencies": {
+        "@types/bun": "^1.2.0"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    },
+    "dependencies": {}
+}
