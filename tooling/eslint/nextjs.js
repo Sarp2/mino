@@ -3,7 +3,7 @@ import onlyWarn from 'eslint-plugin-only-warn';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
-    { ignores: ['**/env.ts', '**/.env', '/next-env.d.ts'] },
+    { ignores: ['**/env.ts', '**/.env', '**/next-env.d.ts'] },
     {
         files: ['**/*.js', '**/*.ts', '**/*.tsx'],
         rules: {
