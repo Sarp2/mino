@@ -80,6 +80,16 @@
         "typescript": "^5.8.2",
       },
     },
+    "packages/utility": {
+      "name": "@mino/utility",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@mino/eslint": "*",
+        "@mino/typescript": "*",
+        "eslint": "^9.0.0",
+        "typescript": "^5.5.4",
+      },
+    },
     "tooling/eslint": {
       "name": "@mino/eslint",
       "version": "0.1.0",
