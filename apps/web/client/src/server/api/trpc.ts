@@ -6,9 +6,15 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from '@trpc/server';
+import { type User } from '@supabase/supabase-js';
+import { initTRPC, TRPCError } from '@trpc/server';
 import superjson from 'superjson';
+import { type SetRequiredDeep } from 'type-fest';
 import { ZodError } from 'zod';
+
+import { db } from '@mino/db/src/client';
+
+import { createClient } from '@/utils/supabase/server';
 
 /**
  * 1. CONTEXT
@@ -23,7 +29,20 @@ import { ZodError } from 'zod';
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+    const supabase = await createClient();
+    const {
+        data: { user },
+        error,
+    } = await supabase.auth.getUser();
+
+    if (error) {
+        throw new TRPCError({ code: 'UNAUTHORIZED', message: error.message });
+    }
+
     return {
+        db,
+        supabase,
+        user,
         ...opts,
     };
 };
@@ -103,3 +122,35 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
+
+/**
+ * Protected (authenticated) procedure
+ *
+ * If you want a query or mutation to ONLY be accessible to logged in users, use this. It verifies
+ * the session is valid and guarantees `ctx.session.user` is not null.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+
+export const proctedProcedure = t.procedure
+    .use(timingMiddleware)
+    .use(({ ctx, next }) => {
+        if (!ctx.user) {
+            throw new TRPCError({ code: 'UNAUTHORIZED' });
+        }
+
+        if (!ctx.user.email) {
+            throw new TRPCError({
+                code: 'UNAUTHORIZED',
+                message:
+                    'User must have an email address to accesss this resource',
+            });
+        }
+
+        return next({
+            ctx: {
+                user: ctx.user as SetRequiredDeep<User, 'email'>,
+                db: ctx.db,
+            },
+        });
+    });
