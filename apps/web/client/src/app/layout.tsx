@@ -4,7 +4,7 @@ import { type Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import { TRPCReactProvider } from '~/trpc/react';
 
-import { Toaster } from '@mino/ui';
+import { Toaster } from '@mino/ui/sonner';
 
 import { AuthProvider } from './auth/auth-context';
 

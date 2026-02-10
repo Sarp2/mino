@@ -36,6 +36,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@mino/db": "*",
+        "@mino/models": "*",
         "@mino/ui": "*",
         "@mino/utility": "*",
         "@supabase/ssr": "^0.8.0",
@@ -84,6 +85,19 @@
         "@mino/eslint": "*",
         "drizzle-kit": "^0.31.4",
         "typescript": "^5.8.2",
+      },
+    },
+    "packages/models": {
+      "name": "@mino/models",
+      "version": "0.0.0",
+      "dependencies": {
+        "zod": "^4.1.3",
+      },
+      "devDependencies": {
+        "@mino/eslint": "*",
+        "@mino/typescript": "*",
+        "eslint": "^9.0.0",
+        "typescript": "^5.5.4",
       },
     },
     "packages/ui": {
@@ -353,6 +367,8 @@
     "@mino/db": ["@mino/db@workspace:packages/db"],
 
     "@mino/eslint": ["@mino/eslint@workspace:tooling/eslint"],
+
+    "@mino/models": ["@mino/models@workspace:packages/models"],
 
     "@mino/prettier": ["@mino/prettier@workspace:tooling/prettier"],
 
