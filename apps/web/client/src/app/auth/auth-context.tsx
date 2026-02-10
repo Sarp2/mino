@@ -105,4 +105,5 @@ export const useAuthContext = () => {
     if (context === undefined) {
         throw new Error('useAuthContext must be used within a AuthProvider');
     }
+    return context;
 };
