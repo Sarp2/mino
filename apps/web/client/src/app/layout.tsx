@@ -4,6 +4,10 @@ import { type Metadata } from 'next';
 import { Geist } from 'next/font/google';
 import { TRPCReactProvider } from '~/trpc/react';
 
+import { Toaster } from '@mino/ui';
+
+import { AuthProvider } from './auth/auth-context';
+
 export const metadata: Metadata = {
     title: 'Mino - AI IDE for designers',
     description:
@@ -22,7 +26,12 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${geist.variable}`}>
             <body>
-                <TRPCReactProvider>{children}</TRPCReactProvider>
+                <TRPCReactProvider>
+                    <AuthProvider>
+                        {children}
+                        <Toaster />
+                    </AuthProvider>
+                </TRPCReactProvider>
             </body>
         </html>
     );

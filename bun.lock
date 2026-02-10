@@ -36,6 +36,7 @@
       "version": "0.1.0",
       "dependencies": {
         "@mino/db": "*",
+        "@mino/ui": "*",
         "@mino/utility": "*",
         "@supabase/ssr": "^0.8.0",
         "@supabase/supabase-js": "^2.93.3",
