@@ -18,6 +18,10 @@
         "eslint": "^9.0.0",
         "typescript": "^5.5.4"
     },
+    "exports": {
+        "./*": "./src/components/*.tsx",
+        "./lib": "./src/lib/index.ts"
+    },
     "dependencies": {
         "@tailwindcss/cli": "^4.1.18",
         "class-variance-authority": "^0.7.1",
