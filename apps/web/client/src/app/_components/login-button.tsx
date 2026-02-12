@@ -1,29 +1,30 @@
-import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { SignInMethod } from '@mino/models';
 import { Button } from '@mino/ui/button';
+import { Icons } from '@mino/ui/icons/index';
 import { cn } from '@mino/ui/lib';
 
 import { useAuthContext } from '../auth/auth-context';
 
 interface LoginButtonProps {
+    content: string;
     className?: string;
-    returnUrl?: string;
+    returnUrl?: string | null;
     method: SignInMethod.GITHUB | SignInMethod.GOOGLE;
-    icon: React.ReactNode;
+    icon: ReactNode;
     providerName: string;
 }
 
 export const LoginButton = ({
+    content,
     className,
     returnUrl,
     method,
     icon,
     providerName,
 }: LoginButtonProps) => {
-    const { lastSignInMethod, handleLogin, signingInMethod } = useAuthContext();
-    const isLastSignInMethod = lastSignInMethod === method;
+    const { handleLogin, signingInMethod } = useAuthContext();
     const isSigningIn = signingInMethod === method;
 
     const handleLoginClick = async () => {
@@ -45,44 +46,43 @@ export const LoginButton = ({
             <Button
                 variant="outline"
                 className={cn(
-                    'text-active w-full items-center justify-center text-sm',
-                    isLastSignInMethod
-                        ? 'text-small border-teal-300 bg-teal-100 text-teal-900 hover:border-teal-500/70 hover:bg-teal-200/50 dark:border-teal-700 dark:bg-teal-950 dark:text-teal-100 dark:hover:border-teal-500 dark:hover:bg-teal-800'
-                        : 'bg-black',
+                    'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                    isSigningIn && 'bg-secondary',
                 )}
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleLoginClick}
                 disabled={!!signingInMethod}
             >
                 {isSigningIn ? (
-                    <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                    <Icons.LoadingSpinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                     icon
                 )}
+                {content}
             </Button>
-            {isLastSignInMethod && (
-                <p className="mt-1 text-sm text-teal-500">
-                    You used this last time
-                </p>
-            )}
         </div>
     );
 };
 
-export const DevLoginButton = ({ returnUrl }: { returnUrl: string }) => {
+export const DevLoginButton = ({ returnUrl }: { returnUrl: string | null }) => {
     const { handleDevLogin, signingInMethod } = useAuthContext();
     const isSigningIn = signingInMethod === SignInMethod.DEV;
 
     return (
         <Button
             variant="outline"
-            className="w-full text-sm"
+            className={cn(
+                'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                isSigningIn && 'bg-secondary',
+            )}
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={() => handleDevLogin(returnUrl)}
             disabled={!!signingInMethod}
         >
             {isSigningIn ? (
-                <LoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                <Icons.LoadingSpinner className="mr-2 h-4 w-4 animate-spin" />
             ) : (
-                'DEV MODE: Sign in as demo user'
+                'Continue with Demo User'
             )}
         </Button>
     );
