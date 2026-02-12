@@ -20,7 +20,9 @@
     },
     "exports": {
         "./*": "./src/components/*.tsx",
-        "./lib": "./src/lib/index.ts"
+        "./icons": "./src/comepontns/icons/index.tsx",
+        "./lib": "./src/lib/index.ts",
+        "./global.css": "./global.css"
     },
     "dependencies": {
         "@tailwindcss/cli": "^4.1.18",
