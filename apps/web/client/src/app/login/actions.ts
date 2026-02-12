@@ -3,16 +3,12 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import type { SignInMethod } from '@mino/models';
+
 import { SEED_USER } from '@mino/db';
 
 import { env } from '@/env';
 import { createClient } from '@/utils/supabase/server';
-
-export enum SignInMethod {
-    GITHUB = 'github',
-    GOOGLE = 'google',
-    DEV = 'dev',
-}
 
 export async function login(
     provider: SignInMethod.GITHUB | SignInMethod.GOOGLE,
