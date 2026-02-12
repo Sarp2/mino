@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import type { ReactNode } from 'react';
+
 import { SignInMethod } from '@mino/models';
 import { Button } from '@mino/ui/button';
 import { Icons } from '@mino/ui/icons/index';
