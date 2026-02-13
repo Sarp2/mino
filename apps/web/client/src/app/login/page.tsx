@@ -1,18 +1,15 @@
 'use client';
 
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
 
 import { SignInMethod } from '@mino/models';
 import { Icons } from '@mino/ui/icons/index';
 
-import { LocalForageKeys } from '@/utils/constants';
 import { DevLoginButton, LoginButton } from '../_components/login-button';
 
 const LoginPage = () => {
     // eslint-disable-next-line no-restricted-properties
     const isDev = process.env.NODE_ENV === 'development';
-    const returnUrl = useSearchParams().get(LocalForageKeys.RETURN_URL);
 
     return (
         <div className="flex h-dvh w-dvw flex-col md:flex-row">
@@ -32,7 +29,6 @@ const LoginPage = () => {
                         </p>
 
                         <LoginButton
-                            returnUrl={returnUrl}
                             content="Continue with Google"
                             method={SignInMethod.GOOGLE}
                             icon={<Icons.Google />}
@@ -51,7 +47,6 @@ const LoginPage = () => {
                         </div>
 
                         <LoginButton
-                            returnUrl={returnUrl}
                             content="Continue with Github"
                             method={SignInMethod.GITHUB}
                             icon={<Icons.Github />}
@@ -70,7 +65,7 @@ const LoginPage = () => {
                                         </span>
                                     </div>
                                 </div>
-                                <DevLoginButton returnUrl={returnUrl} />
+                                <DevLoginButton />
                             </>
                         )}
                     </div>
