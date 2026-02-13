@@ -12,7 +12,6 @@ import { useAuthContext } from '../auth/auth-context';
 interface LoginButtonProps {
     content: string;
     className?: string;
-    returnUrl?: string | null;
     method: SignInMethod.GITHUB | SignInMethod.GOOGLE;
     icon: ReactNode;
     providerName: string;
@@ -21,7 +20,6 @@ interface LoginButtonProps {
 export const LoginButton = ({
     content,
     className,
-    returnUrl,
     method,
     icon,
     providerName,
@@ -31,7 +29,7 @@ export const LoginButton = ({
 
     const handleLoginClick = async () => {
         try {
-            await handleLogin(method, returnUrl ?? null);
+            await handleLogin(method);
         } catch (error) {
             console.error(`Error signing in with ${providerName}:`, error);
             toast.error(`Error signing in with ${providerName}`, {
@@ -66,7 +64,7 @@ export const LoginButton = ({
     );
 };
 
-export const DevLoginButton = ({ returnUrl }: { returnUrl: string | null }) => {
+export const DevLoginButton = () => {
     const { handleDevLogin, signingInMethod } = useAuthContext();
     const isSigningIn = signingInMethod === SignInMethod.DEV;
 
@@ -78,7 +76,7 @@ export const DevLoginButton = ({ returnUrl }: { returnUrl: string | null }) => {
                 isSigningIn && 'bg-secondary',
             )}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={() => handleDevLogin(returnUrl)}
+            onClick={handleDevLogin}
             disabled={!!signingInMethod}
         >
             {isSigningIn ? (

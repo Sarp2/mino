@@ -1,13 +1,11 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
-import localforage from 'localforage';
 
 import type { ReactNode } from 'react';
 
 import { SignInMethod } from '@mino/models';
 
-import { LocalForageKeys } from '@/utils/constants';
 import { devLogin, login } from '../login/actions';
 
 interface AuthContextType {
@@ -16,9 +14,8 @@ interface AuthContextType {
     setIsAuthModelOpen: (open: boolean) => void;
     handleLogin: (
         method: SignInMethod.GITHUB | SignInMethod.GOOGLE,
-        returnUrl: string | null,
     ) => Promise<void>;
-    handleDevLogin: (returnUrl: string | null) => Promise<void>;
+    handleDevLogin: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,16 +28,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const handleLogin = async (
         method: SignInMethod.GITHUB | SignInMethod.GOOGLE,
-        returnUrl: string | null,
     ) => {
         try {
             setSigningInMethod(method);
-            if (returnUrl) {
-                await localforage.setItem(
-                    LocalForageKeys.RETURN_URL,
-                    returnUrl,
-                );
-            }
             await login(method);
         } catch (error) {
             console.error('Error signing in with method: ', method, error);
@@ -50,15 +40,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const handleDevLogin = async (returnUrl: string | null) => {
+    const handleDevLogin = async () => {
         try {
             setSigningInMethod(SignInMethod.DEV);
-            if (returnUrl) {
-                await localforage.setItem(
-                    LocalForageKeys.RETURN_URL,
-                    returnUrl,
-                );
-            }
             await devLogin();
         } catch (error) {
             console.error('Error signing in with password', error);

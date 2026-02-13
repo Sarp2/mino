@@ -1,7 +1,3 @@
-export const LocalForageKeys = {
-    RETURN_URL: 'returnUrl',
-} as const;
-
 export const Routes = {
     HOME: '/',
     LOGIN: '/login',
