@@ -8,6 +8,7 @@ import type { SignInMethod } from '@mino/models';
 import { SEED_USER } from '@mino/db';
 
 import { env } from '@/env';
+import { Routes } from '@/utils/constants';
 import { createClient } from '@/utils/supabase/server';
 
 export async function login(
@@ -16,14 +17,14 @@ export async function login(
     const supabase = await createClient();
 
     const origin = (await headers()).get('origin') ?? env.NEXT_PUBLIC_SITE_URL;
-    const redirectTo = `${origin}/auth/callback`;
+    const redirectTo = `${origin}${Routes.AUTH_CALLBACK}`;
 
     const {
         data: { session },
     } = await supabase.auth.getSession();
 
     if (session) {
-        redirect('/auth/redirect');
+        redirect(Routes.PROJECTS);
     }
 
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -34,7 +35,7 @@ export async function login(
     });
 
     if (error) {
-        redirect('/error');
+        redirect(Routes.ERROR);
     }
 
     redirect(data.url);
@@ -51,7 +52,7 @@ export async function devLogin() {
     } = await supabase.auth.getSession();
 
     if (session) {
-        redirect('/auth/redirect');
+        redirect(Routes.PROJECTS);
     }
 
     const { error } = await supabase.auth.signInWithPassword({
@@ -64,5 +65,5 @@ export async function devLogin() {
         throw new Error(error.message);
     }
 
-    redirect('/auth/redirect');
+    redirect(Routes.PROJECTS);
 }
