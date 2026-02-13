@@ -1,11 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 
 const PageError = () => {
-    const router = useRouter();
-
     return (
         <div className="bg-muted/30 relative flex min-h-screen w-full items-center justify-center overflow-hidden p-6">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,var(--color-primary)/10,transparent_60%)]" />
