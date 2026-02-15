@@ -10,8 +10,8 @@ import { devLogin, login } from '../login/actions';
 
 interface AuthContextType {
     signingInMethod: SignInMethod | null;
-    isAuthModelOpen: boolean;
-    setIsAuthModelOpen: (open: boolean) => void;
+    isAuthModalOpen: boolean;
+    setIsAuthModalOpen: (open: boolean) => void;
     handleLogin: (
         method: SignInMethod.GITHUB | SignInMethod.GOOGLE,
     ) => Promise<void>;
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [signingInMethod, setSigningInMethod] = useState<SignInMethod | null>(
         null,
     );
-    const [isAuthModelOpen, setIsAuthModelOpen] = useState<boolean>(false);
+    const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
 
     const handleLogin = async (
         method: SignInMethod.GITHUB | SignInMethod.GOOGLE,
@@ -57,8 +57,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 signingInMethod,
                 handleLogin,
                 handleDevLogin,
-                isAuthModelOpen,
-                setIsAuthModelOpen,
+                isAuthModalOpen,
+                setIsAuthModalOpen,
             }}
         >
             {children}

@@ -1,5 +1,4 @@
-import { createCallerFactory, createTRPCRouter } from '~/server/api/trpc';
-
+import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
 import { userRouter } from './routers/user/user';
 
 /**

@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.redirect(`${origin}${Routes.PROJECTS}`);
         }
 
-        console.error(`Error exchanging code for session: ${error}`);
+        console.error(`Error exchanging code for session: ${error.message}`);
     }
 
     // return the user to an error page with instructions

@@ -2,10 +2,10 @@ import '~/styles/globals.css';
 
 import { type Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { TRPCReactProvider } from '~/trpc/react';
 
 import { Toaster } from '@mino/ui/sonner';
 
+import { TRPCReactProvider } from '@/trpc/react';
 import { AuthProvider } from './auth/auth-context';
 
 export const metadata: Metadata = {

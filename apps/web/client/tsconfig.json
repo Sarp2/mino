@@ -4,9 +4,7 @@
         "baseUrl": ".",
         "allowArbitraryExtensions": true,
         "paths": {
-            "@/*": ["./src/*"],
-            "/*": ["./*"],
-            "~/*": ["./src/*"]
+            "@/*": ["./src/*"]
         }
     },
     "include": ["src", ".next/types/**/*.ts"],

@@ -4,10 +4,10 @@ import type { User as SupabaseUser } from '@supabase/supabase-js';
 import { userInsertSchema, users } from '@mino/db';
 import { extractNames } from '@mino/utility';
 
-import { createTRPCRouter, proctedProcedure } from '../../trpc';
+import { createTRPCRouter, protectedProcedure } from '../../trpc';
 
 export const userRouter = createTRPCRouter({
-    upsert: proctedProcedure
+    upsert: protectedProcedure
         .input(userInsertSchema)
         .mutation(async ({ ctx, input }): Promise<User | null> => {
             const authUser = ctx.user;

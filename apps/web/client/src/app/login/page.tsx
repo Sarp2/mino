@@ -47,10 +47,10 @@ const LoginPage = () => {
                         </div>
 
                         <LoginButton
-                            content="Continue with Github"
+                            content="Continue with GitHub"
                             method={SignInMethod.GITHUB}
                             icon={<Icons.Github />}
-                            providerName="Github"
+                            providerName="GitHub"
                         />
 
                         {isDev && (

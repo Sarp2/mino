@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 
+import { Routes } from '@/utils/constants';
+
 const PageError = () => {
     return (
         <div className="bg-muted/30 relative flex min-h-screen w-full items-center justify-center overflow-hidden p-6">
@@ -24,10 +26,10 @@ const PageError = () => {
                         type="button"
                         className="bg-primary text-primary-foreground inline-flex h-11 items-center justify-center rounded-xl px-5 text-sm font-medium transition hover:opacity-90"
                     >
-                        <Link href="/">Back to home</Link>
+                        <Link href={Routes.HOME}>Back to home</Link>
                     </button>
                     <Link
-                        href="/login"
+                        href={Routes.LOGIN}
                         className="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center justify-center rounded-xl border px-5 text-sm font-medium transition"
                     >
                         Back to login
