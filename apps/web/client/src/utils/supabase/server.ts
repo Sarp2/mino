@@ -3,6 +3,14 @@ import { createServerClient } from '@supabase/ssr';
 
 import { env } from '@/env';
 
+/**
+ * Create a Supabase server-side (SSR) client configured to use the Next.js cookie store for auth and session handling.
+ *
+ * The returned client delegates cookie reads to the current Next.js cookie store and attempts to apply cookie writes
+ * back to that store; cookie write failures are caught and ignored (useful when called from Server Components).
+ *
+ * @returns A Supabase SSR client configured with the app's public URL and publishable key and wired to the Next.js cookies API
+ */
 export async function createClient() {
     const cookieStore = await cookies();
 

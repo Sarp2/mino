@@ -45,6 +45,15 @@ export const userRouter = createTRPCRouter({
         }),
 });
 
+/**
+ * Derives a display name, first name, and last name from a Supabase user object's metadata.
+ *
+ * @param authUser - Supabase user object whose `user_metadata` and `app_metadata` fields are inspected for name values
+ * @returns An object with:
+ *   - `displayName`: the chosen display name (empty string if none found)
+ *   - `firstName`: the extracted first name
+ *   - `lastName`: the extracted last name
+ */
 function getUserName(authUser: SupabaseUser) {
     /* eslint-disable @typescript-eslint/no-unsafe-assignment */
     const displayName: string | undefined =

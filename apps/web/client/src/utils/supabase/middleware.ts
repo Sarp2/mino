@@ -5,6 +5,12 @@ import type { NextRequest } from 'next/server';
 
 import { env } from '@/env';
 
+/**
+ * Synchronizes Supabase auth session cookies between the incoming Next.js request and the outgoing response.
+ *
+ * @param request - The incoming Next.js request whose cookies will be read and updated to reflect refreshed Supabase auth tokens.
+ * @returns The NextResponse for the client with any updated session cookies applied.
+ */
 export async function updateSession(request: NextRequest) {
     let supabaseResponse = NextResponse.next({
         request,

@@ -20,6 +20,12 @@ const inter = Inter({
     variable: '--font-inter',
 });
 
+/**
+ * Root application layout that applies the Inter font and wraps the app with TRPC and authentication providers.
+ *
+ * @param children - Root React node(s) rendered inside the provider context.
+ * @returns The HTML root element containing the application body with providers, children, and a Toaster.
+ */
 export default function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {

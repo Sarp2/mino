@@ -11,6 +11,11 @@ import { env } from '@/env';
 import { Routes } from '@/utils/constants';
 import { createClient } from '@/utils/supabase/server';
 
+/**
+ * Initiates OAuth sign-in with the specified provider and redirects to the appropriate route (callback, error, or provider URL).
+ *
+ * @param provider - The OAuth provider to use (`SignInMethod.GITHUB` or `SignInMethod.GOOGLE`)
+ */
 export async function login(
     provider: SignInMethod.GITHUB | SignInMethod.GOOGLE,
 ) {
@@ -41,6 +46,13 @@ export async function login(
     redirect(data.url);
 }
 
+/**
+ * Performs a development-only sign-in using the configured seed user and redirects to the projects page.
+ *
+ * Throws an Error if called outside development mode or if password sign-in fails; if a session already exists, the user is redirected to the projects page without attempting sign-in.
+ *
+ * @throws Error - when NODE_ENV is not "development" or when the seed user sign-in returns an error
+ */
 export async function devLogin() {
     if (env.NODE_ENV !== 'development') {
         throw new Error('Dev login is only available in development mode');
