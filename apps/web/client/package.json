@@ -8,7 +8,8 @@
         "lint": "eslint . --max-warnings 0",
         "format": "eslint --fix .",
         "typecheck": "tsc --noEmit",
-        "build": "next build"
+        "build": "next build",
+        "test": "bun test"
     },
     "dependencies": {
         "@mino/db": "*",
