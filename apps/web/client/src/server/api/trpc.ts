@@ -32,12 +32,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     const supabase = await createClient();
     const {
         data: { user },
-        error,
     } = await supabase.auth.getUser();
-
-    if (error) {
-        throw new TRPCError({ code: 'UNAUTHORIZED', message: error.message });
-    }
 
     return {
         db,
