@@ -1,3 +1,4 @@
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { toast } from 'sonner';
 
 import type { ReactNode } from 'react';
@@ -31,6 +32,9 @@ export const LoginButton = ({
         try {
             await handleLogin(method);
         } catch (error) {
+            // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
+            if (isRedirectError(error)) throw error;
+
             console.error(`Error signing in with ${providerName}:`, error);
             toast.error(`Error signing in with ${providerName}`, {
                 description:

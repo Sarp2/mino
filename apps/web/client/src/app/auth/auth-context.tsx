@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState } from 'react';
+import { isRedirectError } from 'next/dist/client/components/redirect-error';
 
 import type { ReactNode } from 'react';
 
@@ -33,6 +34,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setSigningInMethod(method);
             await login(method);
         } catch (error) {
+            // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
+            if (isRedirectError(error)) throw error;
             console.error('Error signing in with method: ', method, error);
             throw error;
         } finally {
@@ -45,7 +48,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setSigningInMethod(SignInMethod.DEV);
             await devLogin();
         } catch (error) {
+            // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
+            if (isRedirectError(error)) throw error;
             console.error('Error signing in with password', error);
+            throw error;
         } finally {
             setSigningInMethod(null);
         }
