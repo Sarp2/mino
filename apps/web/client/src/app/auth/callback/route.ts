@@ -16,14 +16,19 @@ export async function GET(request: NextRequest) {
             await supabase.auth.exchangeCodeForSession(code);
 
         if (!error) {
-            const user = await api.user.upsert({
-                id: data.user.id,
-            });
+            let user;
+
+            try {
+                user = await api.user.upsert({
+                    id: data.user.id,
+                });
+            } catch (error) {
+                console.error('Failed to upsert user:', error);
+                return NextResponse.redirect(`${origin}${Routes.ERROR}`);
+            }
 
             if (!user) {
-                console.error(`Failed to create user for id: ${data.user.id}`, {
-                    user,
-                });
+                console.error('Upsert returned null for user');
                 return NextResponse.redirect(`${origin}${Routes.ERROR}`);
             }
 
