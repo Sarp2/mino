@@ -20,7 +20,7 @@
     },
     "exports": {
         "./*": "./src/components/*.tsx",
-        "./icons": "./src/comepontns/icons/index.tsx",
+        "./icons": "./src/components/icons/index.tsx",
         "./lib": "./src/lib/index.ts",
         "./global.css": "./global.css"
     },
