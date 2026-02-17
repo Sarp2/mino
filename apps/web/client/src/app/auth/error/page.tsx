@@ -28,12 +28,12 @@ const PageError = () => {
                     >
                         <Link href={Routes.HOME}>Back to home</Link>
                     </button>
-                    <Link
-                        href={Routes.LOGIN}
+                    <button
+                        type="button"
                         className="border-border text-foreground hover:bg-secondary inline-flex h-11 items-center justify-center rounded-xl border px-5 text-sm font-medium transition"
                     >
-                        Back to login
-                    </Link>
+                        <Link href={Routes.LOGIN}>Back to login</Link>
+                    </button>
                 </div>
             </div>
         </div>
