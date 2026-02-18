@@ -1,3 +1,5 @@
+import { TRPCError } from '@trpc/server';
+
 import type { User } from '@mino/db';
 import type { User as SupabaseUser } from '@supabase/supabase-js';
 
@@ -12,6 +14,14 @@ export const userRouter = createTRPCRouter({
         .mutation(async ({ ctx, input }): Promise<User | null> => {
             const authUser = ctx.user;
 
+            if (input.id !== authUser.id) {
+                throw new TRPCError({
+                    code: 'FORBIDDEN',
+                    message:
+                        'You are not allowed to update another user record',
+                });
+            }
+
             // TODO: Use existingUser for webhooks in the future
             // const existingUser = await ctx.db.query.users.findFirst({
             // where: eq,
@@ -20,22 +30,28 @@ export const userRouter = createTRPCRouter({
             const { firstName, lastName, displayName } = getUserName(authUser);
 
             const userData = {
-                id: input.id,
+                id: authUser.id,
                 firstName: input.firstName ?? firstName,
                 lastName: input.lastName ?? lastName,
                 displayName: input.displayName ?? displayName,
                 email: input.email ?? authUser.email,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                avatarUrl: input.avatarUrl ?? authUser.user_metadata.avatar_url,
+                avatarUrl:
+                    input.avatarUrl ??
+                    (authUser.user_metadata.avatar_url as string | undefined),
             };
 
+            // If user hasn't been created before, create the user. If it is created before, update some specific fields
             const [user] = await ctx.db
                 .insert(users)
                 .values(userData)
                 .onConflictDoUpdate({
                     target: [users.id],
                     set: {
-                        ...userData,
+                        firstName: userData.firstName,
+                        lastName: userData.lastName,
+                        displayName: userData.displayName,
+                        email: userData.email,
+                        avatarUrl: userData.avatarUrl,
                         updatedAt: new Date(),
                     },
                 })
