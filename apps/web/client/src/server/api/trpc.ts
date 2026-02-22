@@ -32,12 +32,17 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
     const supabase = await createClient();
     const {
         data: { user },
+        error: getUserError,
     } = await supabase.auth.getUser();
+
+    if (getUserError) {
+        console.error('Failed to retrieve user session:', getUserError.message);
+    }
 
     return {
         db,
         supabase,
-        user,
+        user: getUserError ? null : user,
         ...opts,
     };
 };
