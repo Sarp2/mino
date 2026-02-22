@@ -15,7 +15,8 @@
         "db:push": "bun run --filter @mino/db push",
         "format": "bun run --filter '*' format",
         "lint": "bun run --filter '*' lint",
-        "typecheck": "bun run --filter '*' typecheck"
+        "typecheck": "bun run --filter '*' typecheck",
+        "test": "bun run --filter '*' test"
     },
     "devDependencies": {
         "@mino/eslint": "*"

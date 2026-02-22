@@ -7,6 +7,6 @@
             "@/*": ["./src/*"]
         }
     },
-    "include": ["src", ".next/types/**/*.ts"],
+    "include": ["src", ".next/types/**/*.ts", "tests", "happydom.ts"],
     "exclude": ["node_modules", ".next"]
 }

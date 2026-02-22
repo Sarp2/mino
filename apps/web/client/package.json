@@ -9,13 +9,13 @@
         "format": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "build": "next build",
-        "test": "bun test"
+        "test": "bun test --preload ./happydom.ts"
     },
     "dependencies": {
         "@mino/db": "*",
-        "@mino/utility": "*",
         "@mino/models": "*",
         "@mino/ui": "*",
+        "@mino/utility": "*",
         "@supabase/ssr": "^0.8.0",
         "@supabase/supabase-js": "^2.93.3",
         "@t3-oss/env-nextjs": "^0.12.0",
@@ -33,11 +33,14 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
+        "@happy-dom/global-registrator": "^20.6.3",
         "@mino/eslint": "*",
         "@mino/typescript": "*",
         "@tailwindcss/postcss": "^4.0.15",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
         "@types/node": "^20.14.10",
-        "@types/react": "^19.0.0",
+        "@types/react": "^19.2.14",
         "@types/react-dom": "^19.0.0",
         "eslint": "^9.23.0",
         "eslint-config-next": "16.0.7",
