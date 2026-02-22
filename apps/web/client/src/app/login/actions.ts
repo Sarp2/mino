@@ -21,7 +21,13 @@ export async function login(
 
     const {
         data: { user },
+        error: getUserError,
     } = await supabase.auth.getUser();
+
+    if (getUserError) {
+        console.error('Failed to retrieve user session:', getUserError.message);
+        redirect(Routes.ERROR);
+    }
 
     if (user) {
         redirect(Routes.PROJECTS);
@@ -35,6 +41,7 @@ export async function login(
     });
 
     if (error) {
+        console.error('Error signing in with OAuth:', error.message);
         redirect(Routes.ERROR);
     }
 
@@ -47,9 +54,16 @@ export async function devLogin() {
     }
 
     const supabase = await createClient();
+
     const {
         data: { user },
+        error: getUserError,
     } = await supabase.auth.getUser();
+
+    if (getUserError) {
+        console.error('Failed to retrieve user session:', getUserError.message);
+        redirect(Routes.ERROR);
+    }
 
     if (user) {
         redirect(Routes.PROJECTS);
@@ -61,8 +75,8 @@ export async function devLogin() {
     });
 
     if (error) {
-        console.error('Error signing in with password:', error);
-        throw new Error(error.message);
+        console.error('Error signing in with password:', error.message);
+        redirect(Routes.ERROR);
     }
 
     redirect(Routes.PROJECTS);
