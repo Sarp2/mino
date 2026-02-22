@@ -17,9 +17,9 @@
         "db:drop": "drizzle-kit drop"
     },
     "dependencies": {
-        "dotenv": "^17.2.1",
         "drizzle-orm": "^0.44.7",
         "drizzle-zod": "^0.8.3",
+        "postgres": "^3.4.8",
         "uuid": "^11.1.0",
         "zod": "^4.3.5"
     },

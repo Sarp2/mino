@@ -1,0 +1,12 @@
+{
+    "extends": "@mino/typescript/next-react.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "allowArbitraryExtensions": true,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["src", ".next/types/**/*.ts", "tests", "happydom.ts"],
+    "exclude": ["node_modules", ".next"]
+}
