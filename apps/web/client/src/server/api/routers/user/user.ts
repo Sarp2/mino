@@ -55,7 +55,15 @@ export const userRouter = createTRPCRouter({
                         updatedAt: new Date(),
                     },
                 })
-                .returning();
+                .returning()
+                .catch((error: Error) => {
+                    console.error('Failed to upsert user:', error.message);
+                    throw new TRPCError({
+                        code: 'INTERNAL_SERVER_ERROR',
+                        message: 'Failed to upsert user',
+                        cause: error.message,
+                    });
+                });
 
             return user ?? null;
         }),
