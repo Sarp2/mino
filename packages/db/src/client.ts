@@ -1,15 +1,32 @@
-import { SQL } from 'bun';
-import { drizzle } from 'drizzle-orm/bun-sql';
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
 
 import * as schema from '@mino/db/src/schema';
 
+if (process.env.SUPABASE_DATABASE_URL === undefined) {
+    throw new Error(
+        'SUPABASE_DATABASE_URL environment variable is not configured',
+    );
+}
+
+/*
+ * Cache the database connection in development. This avoids creating a new connection on every HMR update
+ */
 const globalFordb = globalThis as unknown as {
-    conn: SQL | undefined;
+    conn: postgres.Sql | undefined;
 };
 
-const conn =
-    globalFordb.conn ??
-    new SQL(process.env.SUPABASE_DATABASE_URL!, { prepare: false });
+let conn: postgres.Sql | undefined;
+
+try {
+    conn =
+        globalFordb.conn ??
+        postgres(process.env.SUPABASE_DATABASE_URL, { prepare: false });
+} catch (error) {
+    throw new Error(
+        `Failed to establish database connection: ${error instanceof Error ? error.message : String(error)}`,
+    );
+}
 
 if (process.env.NODE_ENV !== 'production') {
     globalFordb.conn = conn;

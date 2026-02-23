@@ -1,0 +1,27 @@
+{
+    "name": "@mino/models",
+    "version": "0.0.0",
+    "type": "module",
+    "module": "src/index.ts",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "bun build src/index.ts --outfile=dist/index.js",
+        "clean": "rm -rf node_modules",
+        "lint": "eslint . --max-warnings 0",
+        "format": "eslint --fix .",
+        "typecheck": "tsc --noEmit"
+    },
+    "exports": {
+        ".": "./src/index.ts",
+        "./*": "./src/*/index.ts"
+    },
+    "devDependencies": {
+        "@mino/eslint": "*",
+        "@mino/typescript": "*",
+        "eslint": "^9.0.0",
+        "typescript": "^5.5.4"
+    },
+    "dependencies": {
+        "zod": "^4.1.3"
+    }
+}
