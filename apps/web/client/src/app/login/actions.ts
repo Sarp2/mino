@@ -24,8 +24,12 @@ export async function login(
         error: getUserError,
     } = await supabase.auth.getUser();
 
-    if (getUserError) {
-        console.error('Failed to retrieve user session:', getUserError.message);
+    // If there is a error other than session_not_found, redirect to /auth/error
+    if (getUserError?.code === 'session_not_found') {
+        console.error(
+            'Failed to retrieve user session:',
+            getUserError?.message,
+        );
         redirect(Routes.ERROR);
     }
 
@@ -60,8 +64,12 @@ export async function devLogin() {
         error: getUserError,
     } = await supabase.auth.getUser();
 
-    if (getUserError) {
-        console.error('Failed to retrieve user session:', getUserError.message);
+    // If there is a error other than session_not_found, redirect to /auth/error
+    if (getUserError?.code === 'session_not_found') {
+        console.error(
+            'Failed to retrieve user session:',
+            getUserError?.message,
+        );
         redirect(Routes.ERROR);
     }
 
