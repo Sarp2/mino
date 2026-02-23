@@ -12,32 +12,41 @@ export async function GET(request: NextRequest) {
 
     if (code) {
         const supabase = await createClient();
-        const { data, error } =
-            await supabase.auth.exchangeCodeForSession(code);
 
-        if (!error) {
-            let user;
+        const response = await supabase.auth
+            .exchangeCodeForSession(code)
+            .catch((err: Error) => {
+                console.error(
+                    'Unexpected error exchanging code for session:',
+                    err.message,
+                );
+                return null;
+            });
 
-            try {
-                user = await api.user.upsert({
-                    id: data.user.id,
-                });
-            } catch (error) {
-                console.error('Failed to upsert user:', error);
-                return NextResponse.redirect(`${origin}${Routes.ERROR}`);
-            }
-
-            if (!user) {
-                console.error('Upsert returned null for user');
-                return NextResponse.redirect(`${origin}${Routes.ERROR}`);
-            }
-
-            return NextResponse.redirect(`${origin}${Routes.PROJECTS}`);
+        if (!response || response.error) {
+            console.error(
+                'Error exchanging code for session:',
+                response?.error?.message,
+            );
+            return NextResponse.redirect(`${origin}${Routes.ERROR}`);
         }
 
-        console.error(`Error exchanging code for session: ${error.message}`);
+        let user;
+
+        try {
+            user = await api.user.upsert({ id: response.data.user.id });
+        } catch (error) {
+            console.error('Failed to upsert user:', error);
+            return NextResponse.redirect(`${origin}${Routes.ERROR}`);
+        }
+
+        if (!user) {
+            console.error('Upsert returned null for user');
+            return NextResponse.redirect(`${origin}${Routes.ERROR}`);
+        }
+
+        return NextResponse.redirect(`${origin}${Routes.PROJECTS}`);
     }
 
-    // return the user to an error page with instructions
     return NextResponse.redirect(`${origin}${Routes.ERROR}`);
 }
