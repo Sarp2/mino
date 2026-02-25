@@ -136,7 +136,7 @@ Notes:
 - `AuthSessionMissingError` is a normal logged-out state in many flows, not always a fatal auth outage.
 - Keep `onConflictDoUpdate.set` explicit; avoid accidentally mutating immutable identity fields.
 - `userInsertSchema` includes many fields; avoid trusting client-controlled identity fields for authorization decisions.
-- The root currently has both `bun.lock` and `package-lock.json`; use Bun workflow consistently unless intentionally migrating.
+- The root has `bun.lock`; use Bun workflow consistently.
 
 ## Current CI Expectations
 
