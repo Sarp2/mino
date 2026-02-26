@@ -10,7 +10,6 @@ import {
     varchar,
 } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
-import z from 'zod';
 
 import { frames } from '../frame/frames';
 import { projects } from './project';
@@ -33,6 +32,7 @@ export const branches = pgTable(
         createdAt: timestamp('created_at', { withTimezone: true })
             .defaultNow()
             .notNull(),
+        updatedAt: timestamp('updated_at', { withTimezone: true }),
         isDefault: boolean('is_default').default(false).notNull(),
 
         // git
@@ -41,7 +41,7 @@ export const branches = pgTable(
         gitRepoUrl: varchar('git_repo_url'),
 
         // sandbox
-        sandboxUrl: varchar('sandbox_url').notNull(),
+        sandboxId: varchar('sandbox_id').notNull(),
     },
     (table) => [
         index('branches_project_id_idx').on(table.projectId),
@@ -65,9 +65,7 @@ export const branchRelations = relations(branches, ({ one, many }) => ({
 }));
 
 export const branchInsertSchema = createInsertSchema(branches);
-export const branchUpdateSchema = createUpdateSchema(branches, {
-    id: z.uuid(),
-});
+export const branchUpdateSchema = createUpdateSchema(branches);
 
 export type Branch = typeof branches.$inferSelect;
 export type NewBranch = typeof branches.$inferInsert;
