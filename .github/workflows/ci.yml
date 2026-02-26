@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-bun-workspace
       - run: bun run --filter '*' format
 
@@ -24,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-bun-workspace
       - run: bun run --filter '*' lint
 
@@ -32,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-bun-workspace
       - run: bun run --filter '*' typecheck
 
@@ -40,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-bun-workspace
       - run: bun run --filter '*' test
         env:
