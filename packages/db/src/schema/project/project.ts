@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
+import z from 'zod';
 
 import { canvases } from '../canvas/canvas';
 import { userProjects } from '../user/user-project';
@@ -41,7 +42,9 @@ export const projectRelations = relations(projects, ({ one, many }) => ({
 }));
 
 export const projectInsertSchema = createInsertSchema(projects);
-export const projectUpdateSchema = createUpdateSchema(projects);
+export const projectUpdateSchema = createUpdateSchema(projects).extend({
+    id: z.uuid(),
+});
 
 export type Project = typeof projects.$inferSelect;
 export type NewProject = typeof projects.$inferInsert;
