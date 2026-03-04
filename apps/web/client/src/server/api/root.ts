@@ -1,4 +1,5 @@
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
+import { githubRouter } from './routers/github/github';
 import { userRouter } from './routers/user/user';
 
 /**
@@ -8,6 +9,7 @@ import { userRouter } from './routers/user/user';
  */
 export const appRouter = createTRPCRouter({
     user: userRouter,
+    github: githubRouter,
 });
 
 // export type definition of API

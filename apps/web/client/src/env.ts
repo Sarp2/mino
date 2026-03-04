@@ -11,6 +11,8 @@ export const env = createEnv({
     server: {
         NODE_ENV: z.enum(['development', 'test', 'production']),
         SUPABASE_DATABASE_URL: z.string().url(),
+        GITHUB_APP_ID: z.coerce.number().int().positive(),
+        GITHUB_APP_PRIVATE_KEY: z.string().min(1),
     },
 
     /**
@@ -36,6 +38,8 @@ export const env = createEnv({
         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
         NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
         SUPABASE_DATABASE_URL: process.env.SUPABASE_DATABASE_URL,
+        GITHUB_APP_ID: process.env.GITHUB_APP_ID,
+        GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY,
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
