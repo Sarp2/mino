@@ -9,6 +9,7 @@ export const createDefaultBranch = ({
 }: {
     projectId: string;
     sandboxId: string;
+    sandboxUrl: string;
     overrides?: Partial<Branch>;
 }): Branch => {
     return {

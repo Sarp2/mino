@@ -68,6 +68,7 @@ export const branchRelations = relations(branches, ({ one, many }) => ({
 export const branchInsertSchema = createInsertSchema(branches);
 export const branchUpdateSchema = createUpdateSchema(branches).extend({
     id: z.uuid(),
+    projectId: z.uuid(),
 });
 
 export type Branch = typeof branches.$inferSelect;

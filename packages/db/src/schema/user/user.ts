@@ -19,7 +19,7 @@ export const users = pgTable('users', {
         .defaultNow()
         .notNull(),
     stripeCustomerId: text('stripe_customer_id'),
-    githubInstallationId: text('github_installation_id'),
+    githubAccessToken: text('github_access_token'),
 }).enableRLS();
 
 export const usersRelations = relations(users, ({ many }) => ({
