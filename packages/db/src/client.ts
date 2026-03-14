@@ -1,11 +1,20 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 
-import * as schema from '@mino/db/src/schema';
+import * as schema from './schema/index';
 
-if (process.env.SUPABASE_DATABASE_URL === undefined) {
+const databaseUrl =
+    process.env.NODE_ENV === 'test'
+        ? process.env.TEST_SUPABASE_DATABASE_URL
+        : process.env.SUPABASE_DATABASE_URL;
+
+if (databaseUrl === undefined) {
     throw new Error(
-        'SUPABASE_DATABASE_URL environment variable is not configured',
+        `Database URL is not configured. Expected ${
+            process.env.NODE_ENV === 'test'
+                ? 'TEST_SUPABASE_DATABASE_URL'
+                : 'SUPABASE_DATABASE_URL'
+        } to be set.`,
     );
 }
 
@@ -19,9 +28,7 @@ const globalFordb = globalThis as unknown as {
 let conn: postgres.Sql | undefined;
 
 try {
-    conn =
-        globalFordb.conn ??
-        postgres(process.env.SUPABASE_DATABASE_URL, { prepare: false });
+    conn = globalFordb.conn ?? postgres(databaseUrl, { prepare: false });
 } catch (error) {
     throw new Error(
         `Failed to establish database connection: ${error instanceof Error ? error.message : String(error)}`,
