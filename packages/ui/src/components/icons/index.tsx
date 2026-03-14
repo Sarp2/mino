@@ -47,6 +47,112 @@ export const Icons = {
             />
         </svg>
     ),
+    Nextjs: ({ className, ...props }: IconProps) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className={className}
+            {...props}
+        >
+            <circle cx="24" cy="24" r="20" fill="#111111" />
+            <path
+                d="M16 33V15.8L30.4 33H32V15"
+                stroke="#FFFFFF"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
+            <path
+                d="M27.2 15L32 22.2"
+                stroke="#9CA3AF"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+            />
+        </svg>
+    ),
+    Vite: ({ className, ...props }: IconProps) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className={className}
+            {...props}
+        >
+            <path
+                d="M24 42L9 12.5l8.4 1.2L24 31.6l6.6-17.9L39 12.5 24 42z"
+                fill="#8B5CF6"
+            />
+            <path d="M24 42L17.4 13.7 24 6l6.6 7.7L24 42z" fill="#F59E0B" />
+        </svg>
+    ),
+    Nuxt: ({ className, ...props }: IconProps) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className={className}
+            {...props}
+        >
+            <path
+                d="M8 34.5L17.4 18a3.2 3.2 0 015.6 0l3.6 6.2-7.4 12.9H10.8A2.8 2.8 0 018 34.5z"
+                fill="#00C58E"
+            />
+            <path
+                d="M18.8 37.1l8.8-15.4a3.2 3.2 0 015.6 0l6.8 11.9a2.8 2.8 0 01-2.4 4.2H18.8z"
+                fill="#108775"
+            />
+            <path
+                d="M26.6 24.2l2.2-3.9a3.2 3.2 0 015.6 0l4.2 7.3h-4.4l-7.6-3.4z"
+                fill="#7EE8CA"
+            />
+        </svg>
+    ),
+    Projects: ({ className, ...props }: IconProps) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className={className}
+            {...props}
+        >
+            <circle cx="24" cy="24" r="20" fill="#111111" />
+            <path
+                d="M16 17.5L24 13l8 4.5v11L24 33l-8-4.5v-11z"
+                stroke="#E5E5E5"
+                strokeWidth="2.2"
+                strokeLinejoin="round"
+                fill="none"
+            />
+            <path
+                d="M16 17.5L24 22l8-4.5M24 22v11"
+                stroke="#737373"
+                strokeWidth="2.2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+            />
+        </svg>
+    ),
+    Template: ({ className, ...props }: IconProps) => (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 48 48"
+            width="20"
+            height="20"
+            className={className}
+            {...props}
+        >
+            <rect x="8" y="10" width="24" height="28" rx="5" fill="#E5E7EB" />
+            <rect x="16" y="14" width="24" height="28" rx="5" fill="#D1D5DB" />
+            <rect x="20" y="20" width="16" height="3" rx="1.5" fill="#6B7280" />
+            <rect x="20" y="26" width="12" height="3" rx="1.5" fill="#6B7280" />
+            <rect x="20" y="32" width="14" height="3" rx="1.5" fill="#6B7280" />
+        </svg>
+    ),
     LoadingSpinner: ({ className, ...props }: IconProps) => (
         <svg
             width="16"
