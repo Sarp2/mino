@@ -5,6 +5,9 @@ import { CodeProvider } from './providers';
 import { CodeSandboxProvider } from './providers/codesandbox';
 import { NodeFsProvider } from './providers/nodefs';
 
+export * from './providers';
+export * from './constants';
+
 export interface CreateClientOptions {
     providerOptions: ProviderInstanceOptions;
 }
