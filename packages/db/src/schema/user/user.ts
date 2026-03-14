@@ -2,8 +2,8 @@ import { relations } from 'drizzle-orm';
 import { pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
 
+import { projects } from '../project/project';
 import { userCanvases } from './user-canvas';
-import { userProjects } from './user-project';
 
 export const users = pgTable('users', {
     id: uuid('id').primaryKey().notNull(),
@@ -24,7 +24,7 @@ export const users = pgTable('users', {
 
 export const usersRelations = relations(users, ({ many }) => ({
     userCanvas: many(userCanvases),
-    userProjects: many(userProjects),
+    projects: many(projects),
 }));
 
 export const userInsertSchema = createInsertSchema(users);
