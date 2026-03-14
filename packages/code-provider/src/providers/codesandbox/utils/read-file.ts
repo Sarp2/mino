@@ -1,4 +1,4 @@
-import type { ReadFileInput, ReadFileOutput } from 'src/types';
+import type { ReadFileInput, ReadFileOutput } from '../../../types';
 import type { WebSocketSession } from '@codesandbox/sdk';
 
 import { convertToBase64 } from '@mino/utility';

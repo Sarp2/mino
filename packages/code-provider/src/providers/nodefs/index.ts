@@ -1,11 +1,3 @@
-import {
-    Provider,
-    ProviderBackgroundCommand,
-    ProviderFileWatcher,
-    ProviderTask,
-    ProviderTerminal,
-} from 'src/types';
-
 import type {
     CopyFilesInput,
     CopyFilesOutput,
@@ -52,7 +44,15 @@ import type {
     WatchFilesOutput,
     WriteFileInput,
     WriteFileOutput,
-} from 'src/types';
+} from '../../types';
+
+import {
+    Provider,
+    ProviderBackgroundCommand,
+    ProviderFileWatcher,
+    ProviderTask,
+    ProviderTerminal,
+} from '../../types';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface NodeFsProviderOptions {}

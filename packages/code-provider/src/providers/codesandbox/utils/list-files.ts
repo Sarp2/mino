@@ -1,4 +1,4 @@
-import type { ListFilesInput, ListFilesOutput } from 'src/types';
+import type { ListFilesInput, ListFilesOutput } from '../../../types';
 import type { WebSocketSession } from '@codesandbox/sdk';
 
 export const listFiles = async (

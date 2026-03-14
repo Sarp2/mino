@@ -1,4 +1,4 @@
-import type { WriteFileInput, WriteFileOutput } from 'src/types';
+import type { WriteFileInput, WriteFileOutput } from '../../../types';
 import type { WebSocketSession } from '@codesandbox/sdk';
 
 import { normalizePath } from '@mino/utility';
