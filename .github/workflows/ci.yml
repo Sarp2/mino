@@ -59,17 +59,14 @@ jobs:
       - run: bun run --filter '@mino/web-client' test:e2e
         env:
           NODE_ENV: test
-          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_E2E_SITE_URL }}
-          # GitHub
-          GITHUB_APP_ID: ${{ secrets.GITHUB_APP_ID }}
-          GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
-          GITHUB_APP_PRIVATE_KEY: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+          
           # Supabase (e2e)
-          TEST_SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_E2E_DATABASE_URL }}
-          TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_E2E_SERVICE_ROLE_KEY }}
-          TEST_NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_E2E_URL }}
-          TEST_NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_E2E_PUBLISHABLE_KEY }}
-          TEST_CSB_API_KEY: ${{ secrets.CSB_E2E_API_KEY }}
+          TEST_SUPABASE_DATABASE_URL: ${{ secrets.TEST_SUPABASE_DATABASE_URL }}
+          TEST_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+          NEXT_PUBLIC_TEST_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_TEST_SUPABASE_URL }}
+          NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY }}
+          TEST_CSB_API_KEY: ${{ secrets.TEST_CSB_API_KEY }}
       - if: failure()
         uses: actions/upload-artifact@v4
         with:
