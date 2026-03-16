@@ -1,11 +1,10 @@
 import { TRPCError } from '@trpc/server';
 
 import type { User } from '@mino/db';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import { userInsertSchema, users } from '@mino/db';
-import { extractNames } from '@mino/utility';
 
+import { getUserName } from '@/utils/helpers/get-user-name';
 import { createTRPCRouter, protectedProcedure } from '../../trpc';
 
 export const userRouter = createTRPCRouter({
@@ -13,6 +12,10 @@ export const userRouter = createTRPCRouter({
         .input(userInsertSchema)
         .mutation(async ({ ctx, input }): Promise<User | null> => {
             const authUser = ctx.user;
+            const provider = authUser.app_metadata?.provider;
+            const {
+                data: { session },
+            } = await ctx.supabase.auth.getSession();
 
             if (input.id !== authUser.id) {
                 throw new TRPCError({
@@ -38,6 +41,11 @@ export const userRouter = createTRPCRouter({
                 avatarUrl:
                     input.avatarUrl ??
                     (authUser.user_metadata.avatar_url as string | undefined),
+                // Only include the githubAccessToken if it's actually a GitHub login
+                ...(provider === 'github' &&
+                    session?.provider_token && {
+                        githubAccessToken: session.provider_token,
+                    }),
             };
 
             // If user hasn't been created before, create the user. If it is created before, update some specific fields
@@ -53,6 +61,10 @@ export const userRouter = createTRPCRouter({
                         email: userData.email,
                         avatarUrl: userData.avatarUrl,
                         updatedAt: new Date(),
+                        ...(provider === 'github' &&
+                            session?.provider_token && {
+                                githubAccessToken: session.provider_token,
+                            }),
                     },
                 })
                 .returning()
@@ -68,22 +80,3 @@ export const userRouter = createTRPCRouter({
             return user ?? null;
         }),
 });
-
-function getUserName(authUser: SupabaseUser) {
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-    const displayName: string | undefined =
-        authUser.user_metadata.name ??
-        authUser.user_metadata.display_name ??
-        authUser.user_metadata.full_name ??
-        authUser.app_metadata.first_name ??
-        authUser.app_metadata.last_name ??
-        authUser.app_metadata.given_name ??
-        authUser.user_metadata.family_name;
-
-    const { firstName, lastName } = extractNames(displayName ?? '');
-    return {
-        displayName: displayName ?? '',
-        firstName,
-        lastName,
-    };
-}
