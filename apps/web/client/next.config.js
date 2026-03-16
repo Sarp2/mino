@@ -5,6 +5,15 @@
 import "./src/env.ts";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '*',
+            }
+        ]
+    }
+};
 
 export default config;
