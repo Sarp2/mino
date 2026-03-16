@@ -8,8 +8,9 @@ import { Icons } from '@mino/ui/icons/index';
 import { DevLoginButton, LoginButton } from '../_components/login-button';
 
 const LoginPage = () => {
-    // eslint-disable-next-line no-restricted-properties
-    const isDev = process.env.NODE_ENV === 'development';
+    const isDev =
+        process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'test';
 
     return (
         <div className="flex h-dvh w-dvw flex-col md:flex-row">
