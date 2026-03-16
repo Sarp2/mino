@@ -55,7 +55,7 @@ jobs:
       - run: bunx playwright install --with-deps chromium
       - run: bun run --filter '@mino/db' db:migrate
         env:
-          SUPABASE_DATABASE_URL: ${{ secrets.SUPABASE_E2E_DATABASE_URL }}
+          SUPABASE_DATABASE_URL: ${{ secrets.TEST_SUPABASE_DATABASE_URL }}
       - run: bun run --filter '@mino/web-client' test:e2e
         env:
           NODE_ENV: test
