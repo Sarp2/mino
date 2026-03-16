@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState } from 'react';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
+import localforage from 'localforage';
 
 import type { ReactNode } from 'react';
 
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     ) => {
         try {
             setSigningInMethod(method);
+            await localforage.setItem('provider', method);
             await login(method);
         } catch (error) {
             // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
