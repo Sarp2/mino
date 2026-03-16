@@ -1,13 +1,10 @@
-import { NextResponse } from 'next/server';
-
 import type { NextRequest } from 'next/server';
 
-import { Routes } from './utils/constants';
 import { updateSession } from './utils/supabase/middleware';
 
 export async function proxy(request: NextRequest) {
     // Refresh session and get current user state
-    const { response, user, error } = await updateSession(request);
+    const { response } = await updateSession(request);
 
     // const pathname = request.nextUrl.pathname;
     // const isPublic =

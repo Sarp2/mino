@@ -5,12 +5,11 @@ import Image from 'next/image';
 import { SignInMethod } from '@mino/models';
 import { Icons } from '@mino/ui/icons/index';
 
+import { env } from '@/env';
 import { DevLoginButton, LoginButton } from '../_components/login-button';
 
 const LoginPage = () => {
-    const isDev =
-        process.env.NODE_ENV === 'development' ||
-        process.env.NODE_ENV === 'test';
+    const isDev = env.NODE_ENV === 'development' || env.NODE_ENV === 'test';
 
     return (
         <div className="flex h-dvh w-dvw flex-col md:flex-row">
