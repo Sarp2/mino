@@ -7,9 +7,9 @@ const config = {
             {
                 protocol: 'https',
                 hostname: '*',
-            }
-        ]
-    }
+            },
+        ],
+    },
 };
 
 export default config;
