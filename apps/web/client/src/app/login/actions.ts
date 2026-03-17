@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import type { SignInMethod } from '@mino/models';
 
-import { SEED_USER } from '@mino/db/src/seed/constants';
+import { SEED_USER } from '@mino/db';
 
 import { env } from '@/env';
 import { Routes } from '@/utils/constants';
