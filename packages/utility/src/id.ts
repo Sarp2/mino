@@ -1,4 +1,8 @@
 export function shortenUuid(uuid: string, maxLength: number): string {
+    if (!Number.isInteger(maxLength) || maxLength <= 0) {
+        throw new Error('maxLength must be a positive integer');
+    }
+
     let hash = 0;
     for (let i = 0; i < uuid.length; i++) {
         const char = uuid.charCodeAt(i);
