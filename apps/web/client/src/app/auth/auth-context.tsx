@@ -33,7 +33,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     ) => {
         try {
             setSigningInMethod(method);
-            await localforage.setItem('provider', method);
+            try {
+                await localforage.setItem('provider', method);
+            } catch (error) {
+                console.warn('Failed to persist auth provider', error);
+            }
             await login(method);
         } catch (error) {
             // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
