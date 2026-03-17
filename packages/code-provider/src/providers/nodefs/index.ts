@@ -319,11 +319,8 @@ export class NodeFsCommand extends ProviderBackgroundCommand {
         return 'unimplemented';
     }
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-    get command(): string {
-        return 'unimplemented';
+    get command(): Promise<string> {
+        return Promise.resolve('unimplemented');
     }
 
     open(): Promise<string> {
