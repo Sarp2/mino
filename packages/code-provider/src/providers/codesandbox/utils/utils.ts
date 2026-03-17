@@ -1,7 +1,7 @@
 import type { WebSocketSession } from '@codesandbox/sdk';
 
 import { type SandboxFile } from '@mino/models';
-import { isImageFile } from '@mino/utility';
+import { isMediaFile } from '@mino/utility';
 
 export const getFileFromContent = (
     filePath: string,
@@ -20,7 +20,7 @@ export const readRemoteFile = async (
     filePath: string,
 ): Promise<SandboxFile | null> => {
     try {
-        if (isImageFile(filePath)) {
+        if (isMediaFile(filePath)) {
             const content = await client.fs.readFile(filePath);
             return getFileFromContent(filePath, content);
         } else {

@@ -1,6 +1,6 @@
 import mime from 'mime-lite';
 
-export const IMAGE_EXTENSIONS = [
+export const MEDIA_EXTENSIONS = [
     'image/jpeg',
     'image/png',
     'image/gif',
@@ -49,9 +49,9 @@ export const getMimeType = (fileName: string): string => {
     return 'application/octet-stream';
 };
 
-export const isImageFile = (fileName: string): boolean => {
+export const isMediaFile = (fileName: string): boolean => {
     const mimeType = getMimeType(fileName);
-    return IMAGE_EXTENSIONS.includes(mimeType);
+    return MEDIA_EXTENSIONS.includes(mimeType);
 };
 
 export const convertToBase64 = (content: Uint8Array): string => {
