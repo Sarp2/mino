@@ -91,7 +91,6 @@ export const projectRouter = createTRPCRouter({
                             gitRepoUrl: input.gitRepoUrl ?? null,
                             gitBranch: input.gitBranch ?? null,
                         },
-                        sandboxUrl,
                     });
 
                     await tx.insert(branches).values(newBranch);
@@ -178,7 +177,6 @@ export const projectRouter = createTRPCRouter({
                     const newBranch = createDefaultBranch({
                         projectId: newProject.id,
                         sandboxId: sandboxId,
-                        sandboxUrl,
                     });
 
                     await tx.insert(branches).values(newBranch);
