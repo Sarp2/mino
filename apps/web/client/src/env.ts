@@ -17,6 +17,9 @@ export const env = createEnv({
         GITHUB_CLIENT_ID: z.string(),
         GITHUB_APP_PRIVATE_KEY: z.string(),
         CSB_API_KEY: z.string(),
+
+        TEST_SUPABASE_DATABASE_URL: z.string(),
+        TEST_SUPABASE_SERVICE_ROLE_KEY: z.string(),
     },
 
     /**
@@ -29,6 +32,8 @@ export const env = createEnv({
         NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
         NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string(),
         NEXT_PUBLIC_SITE_URL: z.string().url(),
+        NEXT_PUBLIC_TEST_SUPABASE_URL: z.string(),
+        NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY: z.string(),
     },
 
     /**
@@ -43,27 +48,21 @@ export const env = createEnv({
         GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
         GITHUB_APP_PRIVATE_KEY: process.env.GITHUB_APP_PRIVATE_KEY,
         
-        NEXT_PUBLIC_SUPABASE_URL: isTestEnv
-        ? process.env.NEXT_PUBLIC_TEST_SUPABASE_URL
-        : process.env.NEXT_PUBLIC_SUPABASE_URL,
-
-        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: isTestEnv
-        ? process.env.NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY
-        : process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-
-        SUPABASE_SERVICE_ROLE_KEY: isTestEnv
-            ? process.env.TEST_SUPABASE_SERVICE_ROLE_KEY ??
-              process.env.SUPABASE_SERVICE_ROLE_KEY
-            : process.env.SUPABASE_SERVICE_ROLE_KEY,
+        NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+        SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
         
-        SUPABASE_DATABASE_URL: isTestEnv
-            ? process.env.TEST_SUPABASE_DATABASE_URL ??
-              process.env.SUPABASE_DATABASE_URL
-            : process.env.SUPABASE_DATABASE_URL,
+        SUPABASE_DATABASE_URL: process.env.SUPABASE_DATABASE_URL,
 
         CSB_API_KEY: isTestEnv
         ? process.env.TEST_CSB_API_KEY
         : process.env.CSB_API_KEY,
+
+        // Playwright
+        NEXT_PUBLIC_TEST_SUPABASE_URL: process.env.NEXT_PUBLIC_TEST_SUPABASE_URL,
+        NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_TEST_SUPABASE_PUBLISHABLE_KEY,
+        TEST_SUPABASE_SERVICE_ROLE_KEY: process.env.TEST_SUPABASE_SERVICE_ROLE_KEY,
+        TEST_SUPABASE_DATABASE_URL: process.env.TEST_SUPABASE_DATABASE_URL,
 
     },
     /**
