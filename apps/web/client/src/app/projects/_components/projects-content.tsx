@@ -140,7 +140,6 @@ export const ProjectsContent = () => {
         api.project.createGithubProject.useMutation({
             onSuccess: async (data) => {
                 await utils.project.list.invalidate();
-                console.log(data.sandboxUrl);
                 router.push(`/project/${data.project.id}`);
             },
             onError: (error) => {
@@ -154,7 +153,6 @@ export const ProjectsContent = () => {
         api.project.createTemplateProject.useMutation({
             onSuccess: async (data) => {
                 await utils.project.list.invalidate();
-                console.log(data.sandboxUrl);
                 router.push(`/project/${data.project.id}`);
             },
             onError: (error) => {
