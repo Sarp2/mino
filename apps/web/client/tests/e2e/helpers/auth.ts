@@ -4,7 +4,7 @@ import { chromium, expect } from '@playwright/test';
 
 import type { User as AuthUser } from '@supabase/supabase-js';
 
-import { SEED_USER } from '@mino/db/src/seed/constants';
+import { SEED_USER } from '@mino/db';
 
 import { AUTH_STATE_PATH, BASE_URL } from './env';
 import { supabaseAdmin } from './supabase';

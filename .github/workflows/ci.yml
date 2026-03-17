@@ -58,7 +58,7 @@ jobs:
           SUPABASE_DATABASE_URL: ${{ secrets.TEST_SUPABASE_DATABASE_URL }}
       - run: bun run --filter '@mino/web-client' test:e2e
         env:
-          NODE_ENV: test
+          MINO_ENV: test
           NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
           
           # Supabase (e2e)

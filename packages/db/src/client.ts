@@ -4,14 +4,14 @@ import postgres from 'postgres';
 import * as schema from './schema/index';
 
 const databaseUrl =
-    process.env.NODE_ENV === 'test'
+    process.env.MINO_ENV && process.env.MINO_ENV === 'test'
         ? process.env.TEST_SUPABASE_DATABASE_URL
         : process.env.SUPABASE_DATABASE_URL;
 
 if (databaseUrl === undefined) {
     throw new Error(
         `Database URL is not configured. Expected ${
-            process.env.NODE_ENV === 'test'
+            process.env.MINO_ENV === 'test'
                 ? 'TEST_SUPABASE_DATABASE_URL'
                 : 'SUPABASE_DATABASE_URL'
         } to be set.`,

@@ -29,7 +29,7 @@ export default defineConfig({
     globalSetup: './tests/e2e/global-setup.ts',
     globalTeardown: './tests/e2e/global-teardown.ts',
     webServer: {
-        command: 'NODE_ENV=test bun run --env-file=.env.e2e dev',
+        command: 'MINO_ENV=test bun run --env-file=.env dev',
         url: BASE_URL,
         // eslint-disable-next-line no-restricted-properties
         reuseExistingServer: !process.env.CI,

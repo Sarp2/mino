@@ -10,7 +10,7 @@
         "typecheck": "tsc --noEmit",
         "build": "next build",
         "test": "bun test --preload ./happydom.ts ./tests/unit",
-        "test:e2e": "NODE_ENV=test bun run --env-file=.env.e2e playwright test"
+        "test:e2e": "MINO_ENV=test bun run --env-file=.env playwright test"
     },
     "dependencies": {
         "@mino/db": "*",
