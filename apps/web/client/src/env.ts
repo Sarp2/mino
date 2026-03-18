@@ -65,7 +65,7 @@ export const env = createEnv({
 
         CSB_API_KEY: isTestEnv === true ? process.env.TEST_CSB_API_KEY : process.env.CSB_API_KEY,
 
-        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ?? "9d2a05571b4379ca16311eeea0b1b3d22fed62c4de761b5505d4f614423c3e04"
+        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ?? '0'.repeat(64),
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
