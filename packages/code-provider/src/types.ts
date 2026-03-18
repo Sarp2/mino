@@ -193,15 +193,17 @@ export type StopProjectInput = Record<string, never>;
 export type StopProjectOutput = Record<string, never>;
 
 export type ListProjectsInput = Record<string, never>;
-export type ListProjectsOutput = {
-    projects: {
-        id: string;
-        title: string | undefined;
-        description: string | undefined;
-        createdAt: Date;
-        updatedAt: Date;
-    }[];
-} | Record<string, never>;
+export type ListProjectsOutput =
+    | {
+          projects: {
+              id: string;
+              title: string | undefined;
+              description: string | undefined;
+              createdAt: Date;
+              updatedAt: Date;
+          }[];
+      }
+    | Record<string, never>;
 
 export interface CreateSessionInput {
     args: {

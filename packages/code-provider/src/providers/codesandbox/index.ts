@@ -478,7 +478,7 @@ export class CodeSandboxProvider extends Provider {
     async createSession(
         input: CreateSessionInput,
     ): Promise<CreateSessionOutput> {
-        if (!this.client) {
+        if (!this.client || !this.sandbox) {
             throw new Error(
                 'Client not initialized. There is no WebSocket connection',
             );
