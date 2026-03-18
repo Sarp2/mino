@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import { eq } from 'drizzle-orm';
 
 import { users } from '@mino/db';
+import { decrypt } from '@mino/utility';
 
 import { getOctokit } from '@/utils/octokit/octokit';
 import { createTRPCRouter, protectedProcedure } from '../../trpc';
@@ -26,7 +27,9 @@ export const githubRouter = createTRPCRouter({
             });
         }
 
-        const octokit = getOctokit(user.githubAccessToken);
+        const token = decrypt(user.githubAccessToken);
+
+        const octokit = getOctokit(token);
 
         try {
             const { data: repos } =

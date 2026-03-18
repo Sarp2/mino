@@ -3,6 +3,7 @@ import { TRPCError } from '@trpc/server';
 import type { User } from '@mino/db';
 
 import { userInsertSchema, users } from '@mino/db';
+import { encrypt } from '@mino/utility';
 
 import { getUserName } from '@/utils/helpers/get-user-name';
 import { createTRPCRouter, protectedProcedure } from '../../trpc';
@@ -44,7 +45,7 @@ export const userRouter = createTRPCRouter({
                 // Only include the githubAccessToken if it's actually a GitHub login
                 ...(provider === 'github' &&
                     session?.provider_token && {
-                        githubAccessToken: session.provider_token,
+                        githubAccessToken: encrypt(session.provider_token),
                     }),
             };
 
