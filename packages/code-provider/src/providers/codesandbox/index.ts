@@ -17,13 +17,14 @@ import type {
     DownloadFilesInput,
     DownloadFilesOutput,
     GetTaskInput,
-    GetTaskOuput,
+    GetTaskOutput,
     GitStatusInput,
     GitStatusOutput,
     InitializeInput,
     InitializeOutput,
     ListFilesInput,
     ListFilesOutput,
+    ListProjectsInput,
     ListProjectsOutput,
     PauseProjectInput,
     PauseProjectOutput,
@@ -233,7 +234,7 @@ export class CodeSandboxProvider extends Provider {
         return {};
     }
 
-    async listProjects(_input: ListFilesInput): Promise<ListProjectsOutput> {
+    async listProjects(_input: ListProjectsInput): Promise<ListProjectsOutput> {
         if (this.sandbox) {
             const sdk = new CodeSandbox();
             const projects = await sdk.sandboxes.list();
@@ -398,7 +399,7 @@ export class CodeSandboxProvider extends Provider {
         };
     }
 
-    async getTask(input: GetTaskInput): Promise<GetTaskOuput> {
+    async getTask(input: GetTaskInput): Promise<GetTaskOutput> {
         if (!this.client) {
             throw new Error(
                 'Client not initialized. There is no WebSocket connection',

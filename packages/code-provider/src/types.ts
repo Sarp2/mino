@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-object-type */
-
 import type { SandboxFile } from '@mino/models';
 
 /**
@@ -43,7 +41,7 @@ export interface RenameFileInput {
     };
 }
 
-export interface RenameFileOutput {}
+export type RenameFileOutput = Record<string, never>;
 
 export interface ListFilesInput {
     args: {
@@ -80,7 +78,7 @@ export interface DeleteFilesInput {
     };
 }
 
-export interface DeleteFilesOutput {}
+export type DeleteFilesOutput = Record<string, never>;
 
 export interface DownloadFilesInput {
     args: {
@@ -101,7 +99,7 @@ export interface CopyFilesInput {
     };
 }
 
-export interface CopyFilesOutput {}
+export type CopyFilesOutput = Record<string, never>;
 
 export interface CreateDirectoryInput {
     args: {
@@ -109,7 +107,7 @@ export interface CreateDirectoryInput {
     };
 }
 
-export interface CreateDirectoryOutput {}
+export type CreateDirectoryOutput = Record<string, never>;
 
 export interface WatchEvent {
     type: 'add' | 'change' | 'remove';
@@ -129,7 +127,7 @@ export interface WatchFilesOutput {
     watcher: ProviderFileWatcher;
 }
 
-export interface CreateTerminalInput {}
+export type CreateTerminalInput = Record<string, never>;
 export interface CreateTerminalOutput {
     terminal: ProviderTerminal;
 }
@@ -140,7 +138,7 @@ export interface GetTaskInput {
     };
 }
 
-export interface GetTaskOuput {
+export interface GetTaskOutput {
     task: ProviderTask;
 }
 
@@ -164,17 +162,17 @@ export interface TerminalBackgroundCommandOutput {
     command: ProviderBackgroundCommand;
 }
 
-export interface GitStatusInput {}
+export type GitStatusInput = Record<string, never>;
 
 export interface GitStatusOutput {
     changedFiles: string[];
 }
 
-export interface InitializeInput {}
-export interface InitializeOutput {}
+export type InitializeInput = Record<string, never>;
+export type InitializeOutput = Record<string, never>;
 
-export interface SetupInput {}
-export interface SetupOutput {}
+export type SetupInput = Record<string, never>;
+export type SetupOutput = Record<string, never>;
 
 export interface CreateProjectInput {
     source: string;
@@ -188,14 +186,22 @@ export interface CreateProjectOutput {
     id: string;
 }
 
-export interface PauseProjectInput {}
-export interface PauseProjectOutput {}
+export type PauseProjectInput = Record<string, never>;
+export type PauseProjectOutput = Record<string, never>;
 
-export interface StopProjectInput {}
-export interface StopProjectOutput {}
+export type StopProjectInput = Record<string, never>;
+export type StopProjectOutput = Record<string, never>;
 
-export interface ListProjectsInput {}
-export interface ListProjectsOutput {}
+export type ListProjectsInput = Record<string, never>;
+export type ListProjectsOutput = {
+    projects: {
+        id: string;
+        title: string | undefined;
+        description: string | undefined;
+        createdAt: Date;
+        updatedAt: Date;
+    }[];
+} | Record<string, never>;
 
 export interface CreateSessionInput {
     args: {
@@ -203,7 +209,7 @@ export interface CreateSessionInput {
     };
 }
 
-export interface CreateSessionOutput {}
+export type CreateSessionOutput = Record<string, never>;
 
 export abstract class Provider {
     abstract writeFile(input: WriteFileInput): Promise<WriteFileOutput>;
@@ -229,7 +235,7 @@ export abstract class Provider {
         input: CreateTerminalInput,
     ): Promise<CreateTerminalOutput>;
 
-    abstract getTask(input: GetTaskInput): Promise<GetTaskOuput>;
+    abstract getTask(input: GetTaskInput): Promise<GetTaskOutput>;
 
     abstract runCommand(
         input: TerminalCommandInput,

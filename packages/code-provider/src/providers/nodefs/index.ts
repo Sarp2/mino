@@ -14,7 +14,7 @@ import type {
     DownloadFilesInput,
     DownloadFilesOutput,
     GetTaskInput,
-    GetTaskOuput,
+    GetTaskOutput,
     GitStatusInput,
     GitStatusOutput,
     InitializeInput,
@@ -140,7 +140,7 @@ export class NodeFsProvider extends Provider {
         };
     }
 
-    async getTask(_input: GetTaskInput): Promise<GetTaskOuput> {
+    async getTask(_input: GetTaskInput): Promise<GetTaskOutput> {
         return {
             task: new NodeFsTask(),
         };
