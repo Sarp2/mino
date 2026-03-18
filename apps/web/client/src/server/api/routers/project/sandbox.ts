@@ -9,7 +9,7 @@ import { shortenUuid } from '@mino/utility';
 
 import { getProvider } from '@/utils/helpers/get-provider';
 import { createTRPCRouter, protectedProcedure } from '../../trpc';
-import { verifyProjectAccess } from './helpers';
+import { verifyBranchAccess, verifyProjectAccess } from './helpers';
 
 export const sandboxRouter = createTRPCRouter({
     start: protectedProcedure
@@ -72,8 +72,33 @@ export const sandboxRouter = createTRPCRouter({
                 sandboxId: z.string(),
             }),
         )
-        .mutation(async ({ input }) => {
+        .mutation(async ({ input, ctx }) => {
+            const branch = await ctx.db.query.branches.findFirst({
+                where: eq(branches.sandboxId, input.sandboxId),
+            });
+
+            if (!branch) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Sandbox not found',
+                });
+            }
+
+            const isAuthorized = await verifyBranchAccess(
+                ctx.db,
+                ctx.user.id,
+                branch.id,
+            );
+
+            if (isAuthorized === false) {
+                throw new TRPCError({
+                    code: 'FORBIDDEN',
+                    message: 'Forbidden',
+                });
+            }
+
             const provider = await getProvider({ sandboxId: input.sandboxId });
+
             try {
                 await provider.pauseProject({});
             } finally {
@@ -89,7 +114,30 @@ export const sandboxRouter = createTRPCRouter({
                 sandboxId: z.string(),
             }),
         )
-        .mutation(async ({ input }) => {
+        .mutation(async ({ input, ctx }) => {
+            const branch = await ctx.db.query.branches.findFirst({
+                where: eq(branches.sandboxId, input.sandboxId),
+            });
+
+            if (!branch) {
+                throw new TRPCError({
+                    code: 'NOT_FOUND',
+                    message: 'Sandbox not found',
+                });
+            }
+
+            const isAuthorized = await verifyBranchAccess(
+                ctx.db,
+                ctx.user.id,
+                branch.id,
+            );
+
+            if (isAuthorized === false) {
+                throw new TRPCError({
+                    code: 'FORBIDDEN',
+                    message: 'Forbidden',
+                });
+            }
             const provider = await getProvider({ sandboxId: input.sandboxId });
             try {
                 await provider.stopProject({});
