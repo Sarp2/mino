@@ -90,7 +90,7 @@ export const branchRouter = createTRPCRouter({
             }
 
             try {
-                await ctx.db
+                const result = await ctx.db
                     .update(branches)
                     .set({ ...input, updatedAt: new Date() })
                     .where(
@@ -98,9 +98,20 @@ export const branchRouter = createTRPCRouter({
                             eq(branches.id, input.id),
                             eq(branches.projectId, input.projectId),
                         ),
-                    );
+                    )
+                    .returning({ id: branches.id });
+
+                if (result.length === 0) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Branch not found',
+                    });
+                }
+
                 return true;
-            } catch {
+            } catch (error) {
+                if (error instanceof TRPCError) throw error;
+
                 throw new TRPCError({
                     code: 'INTERNAL_SERVER_ERROR',
                     message: 'Internal server error. Please try again later.',
@@ -129,16 +140,27 @@ export const branchRouter = createTRPCRouter({
             }
 
             try {
-                await ctx.db
+                const result = await ctx.db
                     .delete(branches)
                     .where(
                         and(
                             eq(branches.id, input.branchId),
                             eq(branches.projectId, input.projectId),
                         ),
-                    );
+                    )
+                    .returning({ id: branches.id });
+
+                if (result.length === 0) {
+                    throw new TRPCError({
+                        code: 'NOT_FOUND',
+                        message: 'Branch not found',
+                    });
+                }
+
                 return true;
-            } catch {
+            } catch (error) {
+                if (error instanceof TRPCError) throw error;
+
                 throw new TRPCError({
                     code: 'INTERNAL_SERVER_ERROR',
                     message: 'Internal server error. Please try again later.',
