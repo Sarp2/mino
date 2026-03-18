@@ -89,14 +89,16 @@ export const branchRouter = createTRPCRouter({
                 });
             }
 
+            const { id, projectId, ...updateData } = input;
+
             try {
                 const result = await ctx.db
                     .update(branches)
-                    .set({ ...input, updatedAt: new Date() })
+                    .set({ ...updateData, updatedAt: new Date() })
                     .where(
                         and(
-                            eq(branches.id, input.id),
-                            eq(branches.projectId, input.projectId),
+                            eq(branches.id, id),
+                            eq(branches.projectId, projectId),
                         ),
                     )
                     .returning({ id: branches.id });

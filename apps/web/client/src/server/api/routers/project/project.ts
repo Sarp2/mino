@@ -229,17 +229,16 @@ export const projectRouter = createTRPCRouter({
     update: protectedProcedure
         .input(projectUpdateSchema)
         .mutation(async ({ ctx, input }) => {
+            const { id, ...updateData } = input;
+
             const [updatedProject] = await ctx.db
                 .update(projects)
                 .set({
-                    ...input,
+                    ...updateData,
                     updatedAt: new Date(),
                 })
                 .where(
-                    and(
-                        eq(projects.id, input.id),
-                        eq(projects.userId, ctx.user.id),
-                    ),
+                    and(eq(projects.id, id), eq(projects.userId, ctx.user.id)),
                 )
                 .returning();
 
