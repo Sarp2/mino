@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm';
 
 import type { DrizzleDb } from '@mino/db';
 
-import { branches, projects, users } from '@mino/db';
+import { branches, projects } from '@mino/db';
 
 type DbOrTx = Pick<DrizzleDb, 'query'>;
 
@@ -12,14 +12,15 @@ export const verifyBranchAccess = async (
     branchId: string,
 ): Promise<boolean> => {
     const branch = await db.query.branches.findFirst({
-        where: and(eq(branches.id, branchId), eq(users.id, userId)),
+        where: eq(branches.id, branchId),
+        with: {
+            project: true,
+        },
     });
 
-    if (!branch) {
-        return false;
-    }
+    if (!branch) return false;
 
-    return true;
+    return branch.project.userId === userId;
 };
 
 export const verifyProjectAccess = async (
