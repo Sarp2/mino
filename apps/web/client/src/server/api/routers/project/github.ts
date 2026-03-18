@@ -28,11 +28,19 @@ export const githubRouter = createTRPCRouter({
 
         const octokit = getOctokit(user.githubAccessToken);
 
-        const { data: repos } =
-            await octokit.rest.repos.listForAuthenticatedUser({
-                sort: 'updated',
-                per_page: 100,
+        try {
+            const { data: repos } =
+                await octokit.rest.repos.listForAuthenticatedUser({
+                    sort: 'updated',
+                    per_page: 100,
+                });
+            return repos;
+        } catch (error) {
+            throw new TRPCError({
+                code: 'INTERNAL_SERVER_ERROR',
+                message: 'Failed to fetch GitHub repositories',
+                cause: error,
             });
-        return repos;
+        }
     }),
 });
