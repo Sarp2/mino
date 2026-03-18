@@ -262,8 +262,7 @@ export const ProjectsContent = () => {
         if (isReposError) {
             return (
                 <div className="text-destructive bg-destructive/5 px-5 py-4 text-sm">
-                    {reposError?.message ===
-                    'No GitHub token found. Please re-login with GitHub.'
+                    {reposError?.data?.code === 'UNAUTHORIZED'
                         ? 'GitHub is not connected for this account yet. Switch to Templates to start quickly.'
                         : (reposError?.message ??
                           'Failed to load repositories')}

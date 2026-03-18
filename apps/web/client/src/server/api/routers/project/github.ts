@@ -15,7 +15,7 @@ export const githubRouter = createTRPCRouter({
 
         if (!user) {
             throw new TRPCError({
-                code: 'UNAUTHORIZED',
+                code: 'NOT_FOUND',
                 message: 'User not found.',
             });
         }
