@@ -50,7 +50,7 @@ export const LoginButton = ({
             <Button
                 variant="outline"
                 className={cn(
-                    'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                    'border-border hover:bg-secondary flex h-12 w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
                     isSigningIn && 'bg-secondary',
                 )}
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -76,7 +76,7 @@ export const DevLoginButton = () => {
         <Button
             variant="outline"
             className={cn(
-                'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                'border-border hover:bg-secondary flex h-12 w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
                 isSigningIn && 'bg-secondary',
             )}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
