@@ -106,14 +106,15 @@ export class CodeSandboxProvider extends Provider {
         if (!this.options.sandboxId) return {};
 
         // If there is getSession, get the session and connect to sandbox
-        if (
-            this.options.getSession &&
-            this.options.getSession instanceof WebSocketSession
-        ) {
+        if (this.options.getSession) {
             const session = await this.options.getSession(
                 this.options.sandboxId,
                 this.options.userId,
             );
+
+            if (!session) {
+                throw new Error('Failed to get WebSocket session');
+            }
 
             if (this.options.initClient) {
                 this._client = await connectToSandbox({
@@ -593,7 +594,7 @@ export class CodesandboxTask extends ProviderTask {
     }
 
     restart(): Promise<void> {
-        return this._task.stop();
+        return this._task.restart();
     }
 
     stop(): Promise<void> {
