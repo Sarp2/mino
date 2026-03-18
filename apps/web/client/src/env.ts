@@ -17,7 +17,9 @@ export const env = createEnv({
         GITHUB_APP_ID: z.string(),
         GITHUB_CLIENT_ID: z.string(),
         GITHUB_APP_PRIVATE_KEY: z.string(),
+        
         CSB_API_KEY: z.string(),
+        ENCRYPTION_KEY: z.string(),
     },
 
     /**
@@ -62,6 +64,8 @@ export const env = createEnv({
         : process.env.SUPABASE_DATABASE_URL,
 
         CSB_API_KEY: isTestEnv === true ? process.env.TEST_CSB_API_KEY : process.env.CSB_API_KEY,
+
+        ENCRYPTION_KEY: process.env.ENCRYPTION_KEY ?? "9d2a05571b4379ca16311eeea0b1b3d22fed62c4de761b5505d4f614423c3e04"
     },
     /**
      * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
