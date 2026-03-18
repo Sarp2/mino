@@ -3,9 +3,12 @@ export const formatUpdatedAt = (updatedAt: string | null) => {
         return '-';
     }
 
+    const date = new Date(updatedAt);
+    if (Number.isNaN(date.getTime())) return '-';
+
     return new Intl.DateTimeFormat('en-US', {
         month: 'numeric',
         day: 'numeric',
         year: 'numeric',
-    }).format(new Date(updatedAt));
+    }).format(date);
 };
