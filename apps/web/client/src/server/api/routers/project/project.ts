@@ -145,13 +145,11 @@ export const projectRouter = createTRPCRouter({
             z.object({
                 project: projectInsertSchema.omit({ userId: true }),
                 templateId: z.string(),
-                name: z.string(),
             }),
         )
         .mutation(async ({ ctx, input }) => {
             // Create the sandbox
             const { sandboxId, sandboxUrl } = await createSandboxFromTemplate(
-                input.name,
                 input.templateId,
             );
 

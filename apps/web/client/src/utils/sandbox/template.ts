@@ -9,7 +9,6 @@ import {
 } from '@mino/code-provider';
 
 export const createSandboxFromTemplate = async (
-    title: string,
     templateId: string,
 ): Promise<SandboxResult> => {
     try {
@@ -20,7 +19,6 @@ export const createSandboxFromTemplate = async (
         const createdSandbox = await CodesandboxProvider.createProject({
             source: 'template',
             id: templateId,
-            title,
         });
 
         return {

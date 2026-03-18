@@ -1,4 +1,4 @@
-import { CodeSandbox, WebSocketSession } from '@codesandbox/sdk';
+import { CodeSandbox } from '@codesandbox/sdk';
 import { connectToSandbox } from '@codesandbox/sdk/browser';
 
 import type {
@@ -56,6 +56,7 @@ import type {
     Task,
     Terminal,
     Watcher,
+    WebSocketSession,
 } from '@codesandbox/sdk';
 
 import {
@@ -182,7 +183,6 @@ export class CodeSandboxProvider extends Provider {
         const newSandbox = await sdk.sandboxes.create({
             id: input.id,
             source: 'template',
-            title: input.title,
             description: input.description,
             tags: input.tags,
         });

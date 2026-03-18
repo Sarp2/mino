@@ -192,7 +192,6 @@ export const ProjectsContent = () => {
                 name: template.name,
             },
             templateId: template.templateId,
-            name: template.description,
         });
     };
 
