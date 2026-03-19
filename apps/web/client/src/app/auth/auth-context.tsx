@@ -9,6 +9,7 @@ import type { ReactNode } from 'react';
 import { SignInMethod } from '@mino/models';
 
 import { devLogin, login } from '../login/actions';
+import { PROVIDER_STORAGE_KEY } from '@/utils/constants';
 
 interface AuthContextType {
     signingInMethod: SignInMethod | null;
@@ -34,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         try {
             setSigningInMethod(method);
             try {
-                await localforage.setItem('provider', method);
+                await localforage.setItem(PROVIDER_STORAGE_KEY, method);
             } catch (error) {
                 console.warn('Failed to persist auth provider', error);
             }
