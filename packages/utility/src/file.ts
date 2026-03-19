@@ -43,7 +43,7 @@ export const getMimeType = (fileName: string): string => {
     if (lowerCasedFileName.endsWith('.mov')) return 'video/quicktime';
     if (lowerCasedFileName.endsWith('.avi')) return 'video/x-msvideo';
 
-    const res = mime.getType(fileName);
+    const res = mime.getType(lowerCasedFileName);
     if (res) return res;
     return 'application/octet-stream';
 };
