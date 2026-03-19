@@ -7,7 +7,6 @@ export const MEDIA_EXTENSIONS = [
     'image/webp',
     'image/svg+xml',
     'image/bmp',
-    'image/ico',
     'image/x-icon',
     'image/avif',
     'video/mp4',
