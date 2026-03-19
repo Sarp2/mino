@@ -1,24 +1,22 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import localforage from 'localforage';
 import { Lock } from 'lucide-react';
 import { toast } from 'sonner';
-
-import type { GithubRepo, SourceType, Template } from '@/types';
 
 import { Icons } from '@mino/ui/icons';
 import { formatUpdatedAt } from '@mino/utility';
 
+import { useCreateProject } from '@/hooks/use-create-project';
 import { useFilteredList } from '@/hooks/use-filtered-list';
+import { useInitialSource } from '@/hooks/use-initial-source.ts';
 import { api } from '@/trpc/react';
 import {
     MAX_VISIBLE_PROJECTS,
     MAX_VISIBLE_REPOS,
     MAX_VISIBLE_TEMPLATES,
-    PROVIDER_STORAGE_KEY,
     Templates,
 } from '@/utils/constants';
 import { getTemplateIcon } from '@/utils/helpers/get-template-icon';
@@ -32,14 +30,7 @@ import { LoadingRows } from './loading-rows';
 import { TopBar } from './top-bar';
 
 export const ProjectsContent = () => {
-    const utils = api.useUtils();
     const router = useRouter();
-
-    const [provider, setProvider] = useState<string | null>(null);
-    const [source, setSource] = useState<SourceType>('projects');
-    const [isProviderResolved, setIsProviderResolved] = useState(false);
-    const [isInitialSourceResolved, setIsInitialSourceResolved] =
-        useState(false);
     const [search, setSearch] = useState('');
 
     const {
@@ -52,6 +43,11 @@ export const ProjectsContent = () => {
         gcTime: 15 * 60 * 1000,
     });
 
+    const { source, setSource, isResolved } = useInitialSource({
+        projectCount: projectList?.length,
+        isProjectsLoading,
+    });
+
     const {
         data: repos,
         isLoading: isReposLoading,
@@ -60,60 +56,8 @@ export const ProjectsContent = () => {
     } = api.github.getRepos.useQuery(undefined, {
         staleTime: 5 * 60 * 1000,
         gcTime: 60 * 60 * 1000,
-        enabled: isInitialSourceResolved && source === 'github',
+        enabled: isResolved && source === 'github',
     });
-
-    useEffect(() => {
-        let isCancelled = false;
-
-        const resolveProvider = async () => {
-            let resolvedProvider: string | null = null;
-
-            try {
-                const storedProvider =
-                    await localforage.getItem<string>(PROVIDER_STORAGE_KEY);
-                resolvedProvider =
-                    typeof storedProvider === 'string' ? storedProvider : null;
-            } catch {
-                resolvedProvider = null;
-            }
-
-            if (isCancelled) return;
-
-            setProvider(resolvedProvider);
-            setIsProviderResolved(true);
-        };
-
-        void resolveProvider();
-
-        return () => {
-            isCancelled = true;
-        };
-    }, []);
-
-    useEffect(() => {
-        if (
-            isInitialSourceResolved ||
-            !isProviderResolved ||
-            isProjectsLoading
-        ) {
-            return;
-        }
-
-        if ((projectList?.length ?? 0) > 0) {
-            setSource('projects');
-        } else {
-            setSource(provider === 'github' ? 'github' : 'templates');
-        }
-
-        setIsInitialSourceResolved(true);
-    }, [
-        isInitialSourceResolved,
-        isProjectsLoading,
-        isProviderResolved,
-        projectList,
-        provider,
-    ]);
 
     const filteredRepos = useFilteredList(
         repos,
@@ -136,31 +80,11 @@ export const ProjectsContent = () => {
         MAX_VISIBLE_TEMPLATES,
     );
 
-    const createGithubProjectMutation =
-        api.project.createGithubProject.useMutation({
-            onSuccess: async (data) => {
-                await utils.project.list.invalidate();
-                router.push(`/project/${data.project.id}`);
-            },
-            onError: (error) => {
-                toast.error('Failed to create project', {
-                    description: error.message,
-                });
-            },
-        });
-
-    const createTemplateProjectMutation =
-        api.project.createTemplateProject.useMutation({
-            onSuccess: async (data) => {
-                await utils.project.list.invalidate();
-                router.push(`/project/${data.project.id}`);
-            },
-            onError: (error) => {
-                toast.error('Failed to create project', {
-                    description: error.message,
-                });
-            },
-        });
+    const {
+        createFromGithub,
+        createFromTemplate,
+        isCreating: isCreatingGithubOrTemplate,
+    } = useCreateProject();
 
     const startProjectMutation = api.sandbox.start.useMutation({
         onError: (error) => {
@@ -170,31 +94,6 @@ export const ProjectsContent = () => {
         },
     });
 
-    const isCreating =
-        createGithubProjectMutation.isPending ||
-        createTemplateProjectMutation.isPending ||
-        startProjectMutation.isPending;
-
-    const createGithubProject = async (repo: GithubRepo) => {
-        const branch = repo.default_branch ?? 'main';
-        await createGithubProjectMutation.mutateAsync({
-            project: {
-                name: repo.name,
-            },
-            gitBranch: branch,
-            gitRepoUrl: repo.html_url,
-        });
-    };
-
-    const createTemplateProject = async (template: Template) => {
-        await createTemplateProjectMutation.mutateAsync({
-            project: {
-                name: template.name,
-            },
-            templateId: template.templateId,
-        });
-    };
-
     const startProject = async (projectId: string) => {
         await startProjectMutation.mutateAsync({
             projectId,
@@ -202,7 +101,10 @@ export const ProjectsContent = () => {
         router.push(`/project/${projectId}`);
     };
 
-    const title = !isInitialSourceResolved
+    const isCreating =
+        isCreatingGithubOrTemplate || startProjectMutation.isPending;
+
+    const title = !isResolved
         ? 'Loading...'
         : source === 'projects'
           ? 'Your Projects'
@@ -325,7 +227,7 @@ export const ProjectsContent = () => {
                     isCreating={isCreating}
                     label="Import"
                     onClick={() => {
-                        void createGithubProject(repo);
+                        void createFromGithub(repo);
                     }}
                 />
             </div>
@@ -364,7 +266,7 @@ export const ProjectsContent = () => {
                     isCreating={isCreating}
                     label="Start"
                     onClick={() => {
-                        void createTemplateProject(template);
+                        void createFromTemplate(template);
                     }}
                 />
             </div>
@@ -372,7 +274,7 @@ export const ProjectsContent = () => {
     };
 
     const renderContent = () => {
-        if (!isInitialSourceResolved) return <LoadingRows />;
+        if (!isResolved) return <LoadingRows />;
         if (source === 'projects') return renderProjects();
         if (source === 'github') return renderGithub();
         return renderTemplates();
@@ -385,7 +287,7 @@ export const ProjectsContent = () => {
                     title={title}
                     source={source}
                     search={search}
-                    disabled={!isInitialSourceResolved}
+                    disabled={!isResolved}
                     onSourceChange={setSource}
                     onSearchChange={setSearch}
                 />
