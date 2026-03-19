@@ -8,8 +8,8 @@ import type { ReactNode } from 'react';
 
 import { SignInMethod } from '@mino/models';
 
-import { devLogin, login } from '../login/actions';
 import { PROVIDER_STORAGE_KEY } from '@/utils/constants';
+import { devLogin, login } from '../login/actions';
 
 interface AuthContextType {
     signingInMethod: SignInMethod | null;
