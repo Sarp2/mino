@@ -295,11 +295,15 @@ describe('ProjectsContent', () => {
     test('renders the GitHub token-specific message when repo query fails with the known error', async () => {
         mockLocalforageGetItem.mockResolvedValue('github');
         setProjectListQueryState({ data: [] });
+
+        const trpcError = Object.assign(
+            new Error('No GitHub token found. Please re-login with GitHub.'),
+            { data: { code: 'UNAUTHORIZED' } },
+        );
+
         setReposQueryState({
             data: undefined,
-            error: new Error(
-                'No GitHub token found. Please re-login with GitHub.',
-            ),
+            error: trpcError,
             isError: true,
         });
 
