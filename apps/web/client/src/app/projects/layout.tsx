@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { requireAuth } from '@/utils/auth/requireAuth';
+import { requireAuth } from '@/utils/auth/require-auth';
 
 export const metadata: Metadata = {
     title: 'Mino',
