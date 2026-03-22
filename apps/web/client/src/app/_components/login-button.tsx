@@ -15,7 +15,7 @@ interface LoginButtonProps {
     content: string;
     className?: string;
     method: SignInMethod.GITHUB | SignInMethod.GOOGLE;
-    icon: ReactNode;
+    icon?: ReactNode;
     providerName: string;
 }
 
@@ -53,12 +53,13 @@ export const LoginButton = ({
     };
 
     return (
-        <div className={cn('flex w-full flex-col items-center', className)}>
+        <div className={cn('flex w-full flex-col items-center')}>
             <Button
                 variant="outline"
                 className={cn(
                     'border-border hover:bg-secondary flex h-12 w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
                     isSigningIn && 'bg-secondary',
+                    className,
                 )}
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleLoginClick}
@@ -67,7 +68,7 @@ export const LoginButton = ({
                 {isSigningIn ? (
                     <Icons.LoadingSpinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                    icon
+                    (icon ?? null)
                 )}
                 {content}
             </Button>
