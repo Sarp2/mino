@@ -1,4 +1,5 @@
 import { TRPCError } from '@trpc/server';
+import { eq } from 'drizzle-orm';
 
 import type { User } from '@mino/db';
 
@@ -13,10 +14,6 @@ export const userRouter = createTRPCRouter({
         .input(userInsertSchema)
         .mutation(async ({ ctx, input }): Promise<User | null> => {
             const authUser = ctx.user;
-            const provider = authUser.app_metadata?.provider;
-            const {
-                data: { session },
-            } = await ctx.supabase.auth.getSession();
 
             if (input.id !== authUser.id) {
                 throw new TRPCError({
@@ -42,11 +39,9 @@ export const userRouter = createTRPCRouter({
                 avatarUrl:
                     input.avatarUrl ??
                     (authUser.user_metadata.avatar_url as string | undefined),
-                // Only include the githubAccessToken if it's actually a GitHub login
-                ...(provider === 'github' &&
-                    session?.provider_token && {
-                        githubAccessToken: encrypt(session.provider_token),
-                    }),
+                ...(input.githubAccessToken && {
+                    githubAccessToken: encrypt(input.githubAccessToken),
+                }),
             };
 
             // If user hasn't been created before, create the user. If it is created before, update some specific fields
@@ -62,10 +57,9 @@ export const userRouter = createTRPCRouter({
                         email: userData.email,
                         avatarUrl: userData.avatarUrl,
                         updatedAt: new Date(),
-                        ...(provider === 'github' &&
-                            session?.provider_token && {
-                                githubAccessToken: session.provider_token,
-                            }),
+                        ...(input.githubAccessToken && {
+                            githubAccessToken: encrypt(input.githubAccessToken),
+                        }),
                     },
                 })
                 .returning()
