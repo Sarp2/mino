@@ -17,6 +17,10 @@ const mockToastError = mock();
 const mockIsRedirectError = mock();
 const mockState = { signingInMethod: null as SignInMethod | null };
 
+await mock.module('@mino/models', () => ({
+    SignInMethod: { GITHUB: 'github', GOOGLE: 'google', DEV: 'dev' },
+}));
+
 await mock.module('@/app/auth/auth-context', () => ({
     useAuthContext: () => ({
         handleLogin: mockHandleLogin,

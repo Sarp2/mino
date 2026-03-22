@@ -120,13 +120,19 @@ await mock.module('sonner', () => ({
 }));
 
 await mock.module('@mino/models', () => ({
-    SignInMethod: { GITHUB: 'github' },
+    SignInMethod: { GITHUB: 'github', GOOGLE: 'google', DEV: 'dev' },
 }));
 
-await mock.module('@/app/_components/login-button', () => ({
-    LoginButton: ({ content }: { content: string }) => (
-        <button>{content}</button>
-    ),
+await mock.module('@/app/auth/auth-context', () => ({
+    useAuthContext: () => ({
+        handleLogin: mock(),
+        handleDevLogin: mock(),
+        signingInMethod: null,
+    }),
+}));
+
+await mock.module('next/dist/client/components/redirect-error', () => ({
+    isRedirectError: () => false,
 }));
 
 await mock.module('@/trpc/react', () => ({
