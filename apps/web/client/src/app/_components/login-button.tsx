@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { toast } from 'sonner';
 
@@ -26,12 +27,18 @@ export const LoginButton = ({
     providerName,
 }: LoginButtonProps) => {
     const { handleLogin, signingInMethod } = useAuthContext();
+    const isClickedRef = useRef(false);
+
     const isSigningIn = signingInMethod === method;
 
     const handleLoginClick = async () => {
+        if (isClickedRef.current) return;
+        isClickedRef.current = true;
+
         try {
             await handleLogin(method);
         } catch (error) {
+            isClickedRef.current = false;
             // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
             if (isRedirectError(error)) throw error;
 
