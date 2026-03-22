@@ -28,33 +28,33 @@ export async function login(
     // If user re-sign in up with its account using github, link auth identity
     if (user && provider === SignInMethod.GITHUB) {
         // Check if GitHub identity is already linked
-    const isGithubAlreadyLinked = user.identities?.some(
-        (identity) => identity.provider === 'github'
-    );
-
-    if (isGithubAlreadyLinked) {
-        // Already linked — just redirect to projects
-        redirect(redirectToProjects(origin, Source.PROJECTS));
-    }
-
-    // Not yet linked — proceed with linking
-    callbackUrl.searchParams.set(SOURCE_SEARCH_PARAM_KEY, Source.GITHUB);
-    const { data, error } = await supabase.auth.linkIdentity({
-        provider,
-        options: {
-            redirectTo: callbackUrl.toString(),
-        },
-    });
-
-    if (error || !data.url) {
-        console.error(
-            'Error starting GitHub identity link OAuth:',
-            error?.message ?? 'No redirect URL returned',
+        const isGithubAlreadyLinked = user.identities?.some(
+            (identity) => identity.provider === 'github',
         );
-        redirect(Routes.ERROR);
-    }
 
-    redirect(data.url);
+        if (isGithubAlreadyLinked) {
+            // Already linked — just redirect to projects
+            redirect(redirectToProjects(origin, Source.PROJECTS));
+        }
+
+        // Not yet linked — proceed with linking
+        callbackUrl.searchParams.set(SOURCE_SEARCH_PARAM_KEY, Source.GITHUB);
+        const { data, error } = await supabase.auth.linkIdentity({
+            provider,
+            options: {
+                redirectTo: callbackUrl.toString(),
+            },
+        });
+
+        if (error || !data.url) {
+            console.error(
+                'Error starting GitHub identity link OAuth:',
+                error?.message ?? 'No redirect URL returned',
+            );
+            redirect(Routes.ERROR);
+        }
+
+        redirect(data.url);
     }
 
     if (user) {
