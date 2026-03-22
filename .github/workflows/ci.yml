@@ -47,6 +47,9 @@ jobs:
 
   playwright:
     name: Playwright
+    concurrency:
+      group: playwright-shared-supabase
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
