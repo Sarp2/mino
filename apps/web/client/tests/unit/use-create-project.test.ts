@@ -11,6 +11,28 @@ const mockGithubMutate = mock();
 const mockTemplateMutate = mock();
 const mockToastError = mock();
 
+type MutationCallbacks = {
+    onSuccess?: (data: unknown) => void;
+    onError?: (error: unknown) => void;
+};
+
+const createMutationHook =
+    (mutateAsync: ReturnType<typeof mock>) =>
+    (callbacks?: MutationCallbacks) => ({
+        mutateAsync: async (input: unknown) => {
+            try {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const result = await mutateAsync(input);
+                callbacks?.onSuccess?.(result);
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+                return result;
+            } catch (error) {
+                callbacks?.onError?.(error);
+            }
+        },
+        isPending: false,
+    });
+
 await mock.module('next/navigation', () => ({
     useRouter: () => ({ push: mockPush }),
 }));
@@ -21,33 +43,15 @@ await mock.module('sonner', () => ({
 
 await mock.module('@/trpc/react', () => ({
     api: {
-        useUtils: () => ({ project: { list: { invalidate: mockInvalidate } } }),
+        useUtils: () => ({
+            project: { list: { invalidate: mockInvalidate } },
+        }),
         project: {
             createGithubProject: {
-                useMutation: ({
-                    onSuccess,
-                    onError,
-                }: {
-                    onSuccess: object;
-                    onError: object;
-                }) => ({
-                    mutateAsync: mockGithubMutate,
-                    isPending: false,
-                    _callbacks: { onSuccess, onError },
-                }),
+                useMutation: createMutationHook(mockGithubMutate),
             },
             createTemplateProject: {
-                useMutation: ({
-                    onSuccess,
-                    onError,
-                }: {
-                    onSuccess: object;
-                    onError: object;
-                }) => ({
-                    mutateAsync: mockTemplateMutate,
-                    isPending: false,
-                    _callbacks: { onSuccess, onError },
-                }),
+                useMutation: createMutationHook(mockTemplateMutate),
             },
         },
     },
@@ -73,6 +77,7 @@ describe('useCreateProject', () => {
         mockGithubMutate.mockReset();
         mockTemplateMutate.mockReset();
         mockToastError.mockReset();
+        mockInvalidate.mockResolvedValue(undefined);
     });
 
     test('createFromGithub calls mutate with correct args', async () => {
@@ -104,6 +109,16 @@ describe('useCreateProject', () => {
         );
     });
 
+    test('createFromGithub invalidates list and navigates on success', async () => {
+        mockGithubMutate.mockResolvedValue({ project: { id: 'abc' } });
+        const { result } = render();
+
+        await act(() => result.current.createFromGithub(mockRepo));
+
+        expect(mockInvalidate).toHaveBeenCalled();
+        expect(mockPush).toHaveBeenCalledWith('/project/abc');
+    });
+
     test('createFromTemplate calls mutate with correct args', async () => {
         mockTemplateMutate.mockResolvedValue({ project: { id: '2' } });
         const { result } = render();
@@ -114,5 +129,29 @@ describe('useCreateProject', () => {
             project: { name: 'Next.js' },
             templateId: 'nextjs',
         });
+    });
+
+    test('createFromTemplate invalidates list and navigates on success', async () => {
+        mockTemplateMutate.mockResolvedValue({ project: { id: 'xyz' } });
+        const { result } = render();
+
+        await act(() => result.current.createFromTemplate(mockTemplate));
+
+        expect(mockInvalidate).toHaveBeenCalled();
+        expect(mockPush).toHaveBeenCalledWith('/project/xyz');
+    });
+
+    test('shows toast on mutation error', async () => {
+        mockGithubMutate.mockRejectedValue({ message: 'Network error' });
+        const { result } = render();
+
+        await act(() => result.current.createFromGithub(mockRepo));
+
+        expect(mockToastError).toHaveBeenCalledWith(
+            'Failed to create project',
+            {
+                description: 'Network error',
+            },
+        );
     });
 });

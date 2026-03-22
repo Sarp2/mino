@@ -28,13 +28,13 @@ if (!HTMLElement.prototype.releasePointerCapture) {
 }
 
 const mockPush = mock();
+const mockReplace = mock();
 const mockToastError = mock();
-const mockLocalforageGetItem = mock();
 const mockInvalidateProjectList = mock();
 
 const mockCreateGithubProjectMutateAsync = mock();
 const mockCreateTemplateProjectMutateAsync = mock();
-const mockStartProjectMutateAsync = mock();
+const mockStartProjectMutate = mock();
 
 type QueryState<T> = {
     data: T | undefined;
@@ -59,9 +59,14 @@ let reposQueryState: QueryState<GithubRepo[]> = {
     isLoading: false,
 };
 
+let userQueryState: { data: { githubAccessToken: string | null } | undefined } =
+    { data: { githubAccessToken: 'token-123' } };
+
+let startProjectIsPending = false;
 let createGithubProjectIsPending = false;
 let createTemplateProjectIsPending = false;
-let startProjectIsPending = false;
+
+let mockSourceParam: string | null = null;
 
 const createMutationHook =
     <TResult,>({
@@ -75,13 +80,13 @@ const createMutationHook =
     }) =>
     (options?: {
         onError?: (error: Error) => void;
-        onSuccess?: (data: TResult) => Promise<void> | void;
+        onSuccess?: (data: TResult, input: unknown) => Promise<void> | void;
     }) => ({
         isPending: isPending(),
         mutateAsync: async (input: unknown) => {
             try {
                 const result = await mutateAsync(input);
-                await options?.onSuccess?.(result);
+                await options?.onSuccess?.(result, input);
                 return result;
             } catch (error) {
                 options?.onError?.(error as Error);
@@ -94,35 +99,44 @@ const createMutationHook =
                 throw error;
             }
         },
+        mutate: (input: unknown) => {
+            mutateAsync(input)
+                .then((result: TResult) => options?.onSuccess?.(result, input))
+                .catch((error: Error) => options?.onError?.(error));
+        },
     });
 
 await mock.module('next/navigation', () => ({
-    useRouter: () => ({
-        push: mockPush,
+    useRouter: () => ({ push: mockPush, replace: mockReplace }),
+    usePathname: () => '/projects',
+    useSearchParams: () => ({
+        get: (key: string) => (key === 'source' ? mockSourceParam : null),
+        toString: () => (mockSourceParam ? `source=${mockSourceParam}` : ''),
     }),
 }));
 
-await mock.module('localforage', () => ({
-    default: {
-        getItem: mockLocalforageGetItem,
-    },
+await mock.module('sonner', () => ({
+    toast: { error: mockToastError },
 }));
 
-await mock.module('sonner', () => ({
-    toast: {
-        error: mockToastError,
-    },
+await mock.module('@mino/models', () => ({
+    SignInMethod: { GITHUB: 'github' },
+}));
+
+await mock.module('@/app/_components/login-button', () => ({
+    LoginButton: ({ content }: { content: string }) => (
+        <button>{content}</button>
+    ),
 }));
 
 await mock.module('@/trpc/react', () => ({
     api: {
         useUtils: () => ({
-            project: {
-                list: {
-                    invalidate: mockInvalidateProjectList,
-                },
-            },
+            project: { list: { invalidate: mockInvalidateProjectList } },
         }),
+        user: {
+            get: { useQuery: () => userQueryState },
+        },
         project: {
             list: {
                 useQuery: () => projectListQueryState,
@@ -150,7 +164,7 @@ await mock.module('@/trpc/react', () => ({
             start: {
                 useMutation: createMutationHook({
                     isPending: () => startProjectIsPending,
-                    mutateAsync: mockStartProjectMutateAsync,
+                    mutateAsync: mockStartProjectMutate,
                     suppressError: true,
                 }),
             },
@@ -175,10 +189,7 @@ const defaultRepos = [
         default_branch: 'main',
         updated_at: '2026-03-10T00:00:00.000Z',
         private: false,
-        owner: {
-            avatar_url: '',
-            login: 'owner',
-        },
+        owner: { avatar_url: '', login: 'owner' },
     },
 ] as GithubRepo[];
 
@@ -218,88 +229,67 @@ afterEach(() => {
 describe('ProjectsContent', () => {
     beforeEach(() => {
         mockPush.mockReset();
+        mockReplace.mockReset();
         mockToastError.mockReset();
-        mockLocalforageGetItem.mockReset();
         mockInvalidateProjectList.mockReset();
         mockCreateGithubProjectMutateAsync.mockReset();
         mockCreateTemplateProjectMutateAsync.mockReset();
-        mockStartProjectMutateAsync.mockReset();
+        mockStartProjectMutate.mockReset();
 
         createGithubProjectIsPending = false;
         createTemplateProjectIsPending = false;
         startProjectIsPending = false;
 
-        mockLocalforageGetItem.mockResolvedValue(null);
+        mockSourceParam = null;
+        userQueryState = { data: { githubAccessToken: 'token-123' } };
 
         setProjectListQueryState({});
         setReposQueryState({});
     });
 
-    test('shows loading title and rows before initial source is resolved', async () => {
-        setProjectListQueryState({ isLoading: true, data: undefined });
-
+    test('defaults to projects source and shows project list', async () => {
         await renderProjectsContent();
 
-        expect(screen.getByText('Loading...')).toBeTruthy();
-        expect(screen.getAllByRole('generic').length).toBeGreaterThan(0);
-    });
-
-    test('resolves to projects when projects exist even if provider is github', async () => {
-        mockLocalforageGetItem.mockResolvedValue('github');
-
-        await renderProjectsContent();
-
-        await screen.findByText('Your Projects');
+        expect(screen.getByText('Your Projects')).toBeTruthy();
         expect(screen.getByText('Alpha Project')).toBeTruthy();
     });
 
-    test('resolves to github when there are no projects and stored provider is github', async () => {
-        mockLocalforageGetItem.mockResolvedValue('github');
-        setProjectListQueryState({ data: [] });
+    test('shows github source when URL has source=github', async () => {
+        mockSourceParam = 'github';
+        setReposQueryState({});
 
         await renderProjectsContent();
 
-        await screen.findByText('Import GitHub repository');
+        expect(screen.getByText('Import GitHub repository')).toBeTruthy();
         expect(screen.getByText('alpha-repo')).toBeTruthy();
     });
 
-    test('resolves to templates when there are no projects and provider is missing', async () => {
-        setProjectListQueryState({ data: [] });
+    test('shows templates source when URL has source=templates', async () => {
+        mockSourceParam = 'templates';
 
         await renderProjectsContent();
 
-        await screen.findByText('Use a Template');
+        expect(screen.getByText('Use a Template')).toBeTruthy();
         expect(screen.getByText('Next.js')).toBeTruthy();
     });
 
-    test('resolves to templates when provider lookup fails', async () => {
-        mockLocalforageGetItem.mockRejectedValue(new Error('storage failed'));
-        setProjectListQueryState({ data: [] });
+    test('shows connect GitHub prompt when user has no github token', async () => {
+        mockSourceParam = 'github';
+        userQueryState = { data: { githubAccessToken: null } };
 
         await renderProjectsContent();
 
-        await screen.findByText('Use a Template');
-        expect(screen.getByText('Next.js')).toBeTruthy();
+        expect(screen.getByText('Connect your GitHub account')).toBeTruthy();
+        expect(screen.getByText('Connect GitHub')).toBeTruthy();
     });
 
-    test('renders the GitHub empty state when there are no repositories', async () => {
-        mockLocalforageGetItem.mockResolvedValue('github');
-        setProjectListQueryState({ data: [] });
-        setReposQueryState({ data: [] });
+    test('shows connect GitHub prompt on UNAUTHORIZED repo error', async () => {
+        mockSourceParam = 'github';
+        userQueryState = { data: { githubAccessToken: 'old-token' } };
 
-        await renderProjectsContent();
-
-        await screen.findByText('No repositories found.');
-    });
-
-    test('renders the GitHub token-specific message when repo query fails with the known error', async () => {
-        mockLocalforageGetItem.mockResolvedValue('github');
-        setProjectListQueryState({ data: [] });
-
-        const trpcError = Object.assign(
-            new Error('No GitHub token found. Please re-login with GitHub.'),
-            { data: { code: 'UNAUTHORIZED' } },
-        );
+        const trpcError = Object.assign(new Error('Unauthorized'), {
+            data: { code: 'UNAUTHORIZED' },
+        });
 
         setReposQueryState({
             data: undefined,
@@ -309,26 +299,35 @@ describe('ProjectsContent', () => {
 
         await renderProjectsContent();
 
-        await screen.findByText(
-            'GitHub is not connected for this account yet. Switch to Templates to start quickly.',
-        );
+        expect(screen.getByText('Connect your GitHub account')).toBeTruthy();
     });
 
-    test('renders the generic GitHub error message for other repo failures', async () => {
-        mockLocalforageGetItem.mockResolvedValue('github');
-        setProjectListQueryState({ data: [] });
-        setReposQueryState({
-            data: undefined,
-            error: new Error('Failed to load repositories from API'),
-            isError: true,
-        });
+    test('shows empty state when no repositories exist', async () => {
+        mockSourceParam = 'github';
+        setReposQueryState({ data: [] });
 
         await renderProjectsContent();
 
-        await screen.findByText('Failed to load repositories from API');
+        expect(screen.getByText('No repositories found.')).toBeTruthy();
     });
 
-    test('disables project actions when start mutation is pending', async () => {
+    test('shows empty state when no projects exist', async () => {
+        setProjectListQueryState({ data: [] });
+
+        await renderProjectsContent();
+
+        expect(screen.getByText('No projects yet.')).toBeTruthy();
+    });
+
+    test('shows loading rows while projects are loading', async () => {
+        setProjectListQueryState({ isLoading: true, data: undefined });
+
+        await renderProjectsContent();
+
+        expect(screen.getByText('Your Projects')).toBeTruthy();
+    });
+
+    test('disables action buttons when start mutation is pending', async () => {
         startProjectIsPending = true;
 
         await renderProjectsContent();
@@ -338,8 +337,8 @@ describe('ProjectsContent', () => {
         expect((button as HTMLButtonElement).disabled).toBe(true);
     });
 
-    test('clicking Open starts the sandbox and navigates to the project page', async () => {
-        mockStartProjectMutateAsync.mockResolvedValue({ id: 'session-1' });
+    test('clicking Open starts sandbox and navigates on success', async () => {
+        mockStartProjectMutate.mockResolvedValue({ id: 'session-1' });
 
         await renderProjectsContent();
 
@@ -347,25 +346,43 @@ describe('ProjectsContent', () => {
             fireEvent.click(screen.getByRole('button', { name: 'Open' })),
         );
 
-        expect(mockStartProjectMutateAsync).toHaveBeenCalledTimes(1);
+        expect(mockStartProjectMutate).toHaveBeenCalledWith({
+            projectId: 'project-1',
+        });
 
         await waitFor(() => {
             expect(mockPush).toHaveBeenCalledWith('/project/project-1');
         });
     });
 
-    test('clicking Start triggers template creation and navigates on success', async () => {
-        setProjectListQueryState({ data: [] });
-        mockCreateTemplateProjectMutateAsync.mockResolvedValue({
-            sandboxUrl: 'https://sandbox.example',
-            project: {
-                id: 'template-project-1',
-            },
-        });
+    test('failed sandbox start shows toast and does not navigate', async () => {
+        mockStartProjectMutate.mockRejectedValue(
+            new Error('Sandbox start failed'),
+        );
 
         await renderProjectsContent();
 
-        await screen.findByText('Use a Template');
+        await act(() =>
+            fireEvent.click(screen.getByRole('button', { name: 'Open' })),
+        );
+
+        await waitFor(() => {
+            expect(mockToastError).toHaveBeenCalledWith(
+                'Failed to start a project',
+                { description: 'Sandbox start failed' },
+            );
+        });
+
+        expect(mockPush).not.toHaveBeenCalled();
+    });
+
+    test('clicking Start triggers template creation', async () => {
+        mockSourceParam = 'templates';
+        mockCreateTemplateProjectMutateAsync.mockResolvedValue({
+            project: { id: 'template-project-1' },
+        });
+
+        await renderProjectsContent();
 
         await act(() =>
             fireEvent.click(
@@ -383,61 +400,10 @@ describe('ProjectsContent', () => {
         });
     });
 
-    test('failed sandbox start shows a toast and does not navigate', async () => {
-        mockStartProjectMutateAsync.mockRejectedValue(
-            new Error('Sandbox start failed'),
-        );
+    test('search filters current source and shows no-results message', async () => {
+        mockSourceParam = 'templates';
 
         await renderProjectsContent();
-
-        await act(() =>
-            fireEvent.click(screen.getByRole('button', { name: 'Open' })),
-        );
-
-        await waitFor(() => {
-            expect(mockToastError).toHaveBeenCalledWith(
-                'Failed to start a project',
-                {
-                    description: 'Sandbox start failed',
-                },
-            );
-        });
-
-        expect(mockPush).not.toHaveBeenCalled();
-    });
-
-    test('failed create mutation shows a toast error', async () => {
-        setProjectListQueryState({ data: [] });
-        mockCreateTemplateProjectMutateAsync.mockRejectedValue(
-            new Error('Template creation failed'),
-        );
-
-        await renderProjectsContent();
-
-        await screen.findByText('Use a Template');
-
-        await act(() =>
-            fireEvent.click(
-                screen.getAllByRole('button', { name: 'Start' })[0]!,
-            ),
-        );
-
-        await waitFor(() => {
-            expect(mockToastError).toHaveBeenCalledWith(
-                'Failed to create project',
-                {
-                    description: 'Template creation failed',
-                },
-            );
-        });
-    });
-
-    test('search shows no results when the current source has no matches', async () => {
-        setProjectListQueryState({ data: [] });
-
-        await renderProjectsContent();
-
-        await screen.findByText('Use a Template');
 
         await act(() =>
             fireEvent.change(screen.getByPlaceholderText('Search...'), {
