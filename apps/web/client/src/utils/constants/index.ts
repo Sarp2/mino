@@ -1,5 +1,7 @@
 import type { Template } from '@/types';
 
+export * from './supabase';
+
 export const Routes = {
     HOME: '/',
     LOGIN: '/login',
@@ -9,6 +11,13 @@ export const Routes = {
     ERROR: '/auth/error',
 } as const;
 
+export const Source = {
+    PROJECTS: 'projects',
+    TEMPLATES: 'templates',
+    GITHUB: 'github',
+} as const;
+
+export const SOURCE_SEARCH_PARAM_KEY = 'source';
 export const PROVIDER_STORAGE_KEY = 'provider';
 
 export const Templates: Template[] = [
