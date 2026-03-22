@@ -15,13 +15,17 @@ const mockHandleLogin = mock();
 const mockHandleDevLogin = mock();
 const mockToastError = mock();
 const mockIsRedirectError = mock();
-let signingInMethod: SignInMethod | null = null;
+const mockState = { signingInMethod: null as SignInMethod | null };
+
+await mock.module('@mino/models', () => ({
+    SignInMethod: { GITHUB: 'github', GOOGLE: 'google', DEV: 'dev' },
+}));
 
 await mock.module('@/app/auth/auth-context', () => ({
     useAuthContext: () => ({
         handleLogin: mockHandleLogin,
         handleDevLogin: mockHandleDevLogin,
-        signingInMethod,
+        signingInMethod: mockState.signingInMethod,
     }),
 }));
 
@@ -57,7 +61,7 @@ afterEach(() => {
 
 describe('LoginButton', () => {
     beforeEach(() => {
-        signingInMethod = null;
+        mockState.signingInMethod = null;
         mockHandleLogin.mockReset();
         mockHandleDevLogin.mockReset();
         mockToastError.mockReset();
@@ -71,7 +75,7 @@ describe('LoginButton', () => {
         await act(() =>
             fireEvent.click(
                 screen.getByRole('button', {
-                    name: 'icon Continue with GitHub',
+                    name: /Continue with GitHub/,
                 }),
             ),
         );
@@ -90,7 +94,7 @@ describe('LoginButton', () => {
         await act(() =>
             fireEvent.click(
                 screen.getByRole('button', {
-                    name: 'icon Continue with Google',
+                    name: /Continue with Google/,
                 }),
             ),
         );
@@ -105,7 +109,7 @@ describe('LoginButton', () => {
         await act(() =>
             fireEvent.click(
                 screen.getByRole('button', {
-                    name: 'icon Continue with GitHub',
+                    name: /Continue with GitHub/,
                 }),
             ),
         );
@@ -119,7 +123,7 @@ describe('LoginButton', () => {
     });
 
     test('button is disabled when signingInMethod is set', async () => {
-        signingInMethod = SignInMethod.GITHUB;
+        mockState.signingInMethod = SignInMethod.GITHUB;
         renderLoginButton();
 
         const button = screen.getByRole('button', {
@@ -130,7 +134,7 @@ describe('LoginButton', () => {
     });
 
     test('shows loader icon when signingInMethod is set', async () => {
-        signingInMethod = SignInMethod.GITHUB;
+        mockState.signingInMethod = SignInMethod.GITHUB;
         renderLoginButton();
 
         const button = screen.getByRole('button', {
@@ -143,7 +147,7 @@ describe('LoginButton', () => {
 
 describe('LoginDevButton', () => {
     beforeEach(() => {
-        signingInMethod = null;
+        mockState.signingInMethod = null;
         mockHandleLogin.mockReset();
         mockHandleDevLogin.mockReset();
     });
@@ -162,7 +166,7 @@ describe('LoginDevButton', () => {
     });
 
     test('button is disabled when signingInMethod is set', async () => {
-        signingInMethod = SignInMethod.DEV;
+        mockState.signingInMethod = SignInMethod.DEV;
         render(<DevLoginButton />);
 
         const button = screen.getByRole('button');
@@ -171,7 +175,7 @@ describe('LoginDevButton', () => {
     });
 
     test('shows loader icon when signingInMethod is set', async () => {
-        signingInMethod = SignInMethod.DEV;
+        mockState.signingInMethod = SignInMethod.DEV;
         render(<DevLoginButton />);
 
         const button = screen.getByRole('button');

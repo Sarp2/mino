@@ -1,7 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { numeric, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
 import { createInsertSchema, createUpdateSchema } from 'drizzle-zod';
-import { z } from 'zod';
 
 import { canvases } from '../canvas/canvas';
 import { branches } from '../project/branch';
@@ -39,9 +38,7 @@ export const frameRelations = relations(frames, ({ one }) => ({
 }));
 
 export const frameInsertSchema = createInsertSchema(frames);
-export const frameUpdateSchema = createUpdateSchema(frames, {
-    id: z.uuid(),
-});
+export const frameUpdateSchema = createUpdateSchema(frames);
 
 export type Frame = typeof frames.$inferSelect;
 export type NewFrame = typeof frames.$inferInsert;

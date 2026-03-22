@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { toast } from 'sonner';
 
@@ -14,7 +15,7 @@ interface LoginButtonProps {
     content: string;
     className?: string;
     method: SignInMethod.GITHUB | SignInMethod.GOOGLE;
-    icon: ReactNode;
+    icon?: ReactNode;
     providerName: string;
 }
 
@@ -26,12 +27,18 @@ export const LoginButton = ({
     providerName,
 }: LoginButtonProps) => {
     const { handleLogin, signingInMethod } = useAuthContext();
+    const isClickedRef = useRef(false);
+
     const isSigningIn = signingInMethod === method;
 
     const handleLoginClick = async () => {
+        if (isClickedRef.current) return;
+        isClickedRef.current = true;
+
         try {
             await handleLogin(method);
         } catch (error) {
+            isClickedRef.current = false;
             // If it is same redirect error coming from server action, break the catch block and throw the same redirect error
             if (isRedirectError(error)) throw error;
 
@@ -46,12 +53,13 @@ export const LoginButton = ({
     };
 
     return (
-        <div className={cn('flex w-full flex-col items-center', className)}>
+        <div className={cn('flex w-full flex-col items-center')}>
             <Button
                 variant="outline"
                 className={cn(
-                    'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                    'border-border hover:bg-secondary flex h-12 w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
                     isSigningIn && 'bg-secondary',
+                    className,
                 )}
                 // eslint-disable-next-line @typescript-eslint/no-misused-promises
                 onClick={handleLoginClick}
@@ -60,7 +68,7 @@ export const LoginButton = ({
                 {isSigningIn ? (
                     <Icons.LoadingSpinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                    icon
+                    (icon ?? null)
                 )}
                 {content}
             </Button>
@@ -76,7 +84,7 @@ export const DevLoginButton = () => {
         <Button
             variant="outline"
             className={cn(
-                'border-border hover:bg-secondary flex w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
+                'border-border hover:bg-secondary flex h-12 w-full items-center justify-center gap-3 rounded-2xl border py-4 text-[16px] transition-colors',
                 isSigningIn && 'bg-secondary',
             )}
             // eslint-disable-next-line @typescript-eslint/no-misused-promises

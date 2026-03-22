@@ -18,10 +18,16 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # dotenv environment variable files
 .env
 .env.development.local
+.env.test
+.env.e2e
 .env.test.local
 .env.production.local
 .env.local
 apps/backend/.env
+apps/web/client/.env.e2e
+apps/web/client/playwright/.auth
+apps/web/client/playwright-report
+apps/web/client/test-results
 
 # caches
 .eslintcache

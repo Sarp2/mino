@@ -1,11 +1,12 @@
 import { TRPCError } from '@trpc/server';
+import { eq } from 'drizzle-orm';
 
 import type { User } from '@mino/db';
-import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 import { userInsertSchema, users } from '@mino/db';
-import { extractNames } from '@mino/utility';
+import { encrypt } from '@mino/utility';
 
+import { getUserName } from '@/utils/helpers/get-user-name';
 import { createTRPCRouter, protectedProcedure } from '../../trpc';
 
 export const userRouter = createTRPCRouter({
@@ -38,6 +39,9 @@ export const userRouter = createTRPCRouter({
                 avatarUrl:
                     input.avatarUrl ??
                     (authUser.user_metadata.avatar_url as string | undefined),
+                ...(input.githubAccessToken && {
+                    githubAccessToken: encrypt(input.githubAccessToken),
+                }),
             };
 
             // If user hasn't been created before, create the user. If it is created before, update some specific fields
@@ -53,6 +57,9 @@ export const userRouter = createTRPCRouter({
                         email: userData.email,
                         avatarUrl: userData.avatarUrl,
                         updatedAt: new Date(),
+                        ...(input.githubAccessToken && {
+                            githubAccessToken: encrypt(input.githubAccessToken),
+                        }),
                     },
                 })
                 .returning()
@@ -67,23 +74,12 @@ export const userRouter = createTRPCRouter({
 
             return user ?? null;
         }),
+    get: protectedProcedure.query(async ({ ctx }) => {
+        const authUser = ctx.user;
+
+        const user = await ctx.db.query.users.findFirst({
+            where: eq(users.id, authUser.id),
+        });
+        return user;
+    }),
 });
-
-function getUserName(authUser: SupabaseUser) {
-    /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-    const displayName: string | undefined =
-        authUser.user_metadata.name ??
-        authUser.user_metadata.display_name ??
-        authUser.user_metadata.full_name ??
-        authUser.app_metadata.first_name ??
-        authUser.app_metadata.last_name ??
-        authUser.app_metadata.given_name ??
-        authUser.user_metadata.family_name;
-
-    const { firstName, lastName } = extractNames(displayName ?? '');
-    return {
-        displayName: displayName ?? '',
-        firstName,
-        lastName,
-    };
-}
