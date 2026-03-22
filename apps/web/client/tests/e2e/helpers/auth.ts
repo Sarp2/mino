@@ -71,7 +71,7 @@ export const saveAuthStateToDisk = async (): Promise<void> => {
             .getByRole('button', { name: 'Continue with Demo User' })
             .click();
 
-        await page.waitForURL('**/projects', { timeout: 20_000 });
+        await page.waitForURL('**/projects**', { timeout: 20_000 });
 
         await expect
             .poll(
