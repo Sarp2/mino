@@ -80,4 +80,12 @@ export const userRouter = createTRPCRouter({
 
             return user ?? null;
         }),
+    get: protectedProcedure.query(async ({ ctx }) => {
+        const authUser = ctx.user;
+
+        const user = await ctx.db.query.users.findFirst({
+            where: eq(users.id, authUser.id),
+        });
+        return user;
+    }),
 });
