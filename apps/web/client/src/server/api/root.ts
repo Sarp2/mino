@@ -1,4 +1,5 @@
 import { createCallerFactory, createTRPCRouter } from '@/server/api/trpc';
+import { userCanvasRouter } from './routers/canvas/canvas';
 import { branchRouter } from './routers/project/branch';
 import { githubRouter } from './routers/project/github';
 import { projectRouter } from './routers/project/project';
@@ -12,6 +13,7 @@ import { userRouter } from './routers/user/user';
  */
 export const appRouter = createTRPCRouter({
     user: userRouter,
+    userCanvas: userCanvasRouter,
     project: projectRouter,
     branch: branchRouter,
     sandbox: sandboxRouter,
