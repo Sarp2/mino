@@ -275,4 +275,17 @@ export const projectRouter = createTRPCRouter({
             orderBy: (projects, { desc }) => [desc(projects.updatedAt)],
         });
     }),
+    hasAccess: protectedProcedure
+        .input(z.object({ projectId: z.string() }))
+        .query(async ({ ctx, input }) => {
+            const user = ctx.user;
+            const project = await ctx.db.query.projects.findFirst({
+                where: and(
+                    eq(projects.id, input.projectId),
+                    eq(projects.userId, user.id),
+                ),
+            });
+
+            return !!project;
+        }),
 });
