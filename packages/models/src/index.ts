@@ -5,3 +5,4 @@ export * from './project/branch';
 export * from './sandbox';
 export * from './provider';
 export * from './editor';
+export * from './chat';
