@@ -84,6 +84,7 @@
     "apps/web/preload": {
       "name": "@mino/web-preload",
       "dependencies": {
+        "@mino/models": "*",
         "css-tree": "^3.1.0",
         "lodash-es": "^4.17.21",
         "lodash.debounce": "^4.0.8",
