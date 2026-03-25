@@ -1,91 +1,61 @@
 language: en-US
 
-early_access: false
-
-# Review settings
 reviews:
-  # Review every pull request
   auto_review:
     enabled: true
-    # Trigger on these events
-    drafts: true
+    drafts: false
     base_branches:
-      - "*"
+      - main
 
-  # Review configuration
-  profile: assertive
-
-  # Request changes for critical issues
-  request_changes_workflow: true
-
-  # High-level summary
+  profile: chill
+  request_changes_workflow: false
   high_level_summary: true
+  collapse_walkthrough: true
+  sequence_diagrams: false
 
-  # Review status comment
-  review_status: true
-
-  # Collapse walkthrough details
-  collapse_walkthrough: false
-
-  # Sequence diagrams for flow changes
-  sequence_diagrams: true
-
-  # Path-based instructions for specific file types
   path_instructions:
-    - path: "src/**/*.{ts,tsx,js}"
+    - path: "apps/web/client/src/server/**/*.ts"
       instructions: |
-        Review the React.js/TypeScript/JavaScript code for best practices and potential bugs.
-        Ensure that the code adheres to TypeScript's typing system and modern standards.
-        Ensure sufficient error handling and logging is present.
-        Check for common security vulnerabilities such as:
-          - SQL Injection
-          - XSS (Cross-Site Scripting)
-          - CSRF (Cross-Site Request Forgery)
-          - Insecure dependencies
-          - Sensitive data exposure
+        This is server-only tRPC code. Verify:
+        - protectedProcedure is used for authenticated routes
+        - Ownership checks are enforced server-side, not just UI-gated
+        - onConflictDoUpdate.set does not mutate immutable identity fields
 
-    - path: "**/*.css"
+    - path: "apps/web/client/src/proxy.ts"
       instructions: |
-        - Check for unused styles
-        - Look for responsive design issues
-        - Verify CSS naming conventions
+        This is the Next.js 16 request proxy (not middleware.ts).
+        It handles session refresh and auth redirects.
+        Changes here affect every request — review carefully.
 
-    - path: "**/*.md"
+    - path: "apps/web/client/src/app/auth/**/*.ts"
       instructions: |
-        - Check for broken links
-        - Verify markdown formatting
-        - Check for spelling and grammar
+        Auth callback and error handling. Next.js redirects throw special errors.
+        Ensure redirect errors are filtered via isRedirectError(), not logged as failures.
 
-  # Files and paths to include or exclude
+    - path: "packages/db/src/schema/**/*.ts"
+      instructions: |
+        Drizzle ORM schema definitions. Changes here affect migrations.
+        Verify new columns have sensible defaults and nullability.
+
+    - path: "packages/code-provider/src/**/*.ts"
+      instructions: |
+        Sandbox provider abstraction. All method parameters must be JSON-serializable
+        primitives (no classes, callbacks, or non-serializable types) for LLM integration.
+
   path_filters:
-    - "node_modules/**"
-    - "dist/**"
-    - "build/**"
-    - "coverage/**"
-    - "*.min.js"
-    - "*.min.css"
-    - "package-lock.json"
-    - "yarn.lock"
-    - "pnpm-lock.yaml"
-    - "bun.lockb"
-    - ".git/**"
-    - ".github/**"
-    - "public/assets/**"
+    - "!**/*.lock"
+    - "!bun.lock"
+    - "!.next/**"
+    - "!**/node_modules/**"
+    - "!**/dist/**"
+    - "!**/coverage/**"
+    - "!**/playwright-report/**"
+    - "!**/test-results/**"
+    - "!apps/backend/supabase/migrations/**"
 
-  # Tools configuration
   tools:
-    # Shellcheck for shell scripts
     shellcheck:
       enabled: true
 
-# Tone and style of reviews
-tone_instructions: |
-  - Be constructive and encouraging
-  - Explain the reasoning behind suggestions
-  - Provide examples when suggesting changes
-  - Focus on security, performance, and maintainability
-  - Be respectful and professional
-
-# Chat settings
 chat:
   auto_reply: true
