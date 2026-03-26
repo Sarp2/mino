@@ -69,7 +69,7 @@ bun run db:gen / db:push / db:migrate / db:studio
 
 ## Testing
 
-- **Unit**: Bun test runner + Happy DOM preload + Testing Library. Tests in `apps/web/client/tests/unit/`.
+- **Unit**: Bun test runner + Happy DOM preload + Testing Library. Tests in `apps/web/client/tests/unit/hooks/` and `tests/unit/components/`. Hooks run first, components second (separate processes to prevent mock bleed).
 - **E2E**: Playwright (Chrome, single worker). Tests in `apps/web/client/tests/e2e/`. Requires `MINO_ENV=test` and test Supabase env vars.
 
 ## CI
