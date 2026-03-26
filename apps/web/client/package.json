@@ -9,7 +9,7 @@
         "format": "eslint --fix .",
         "typecheck": "tsc --noEmit",
         "build": "next build",
-        "test": "bun test --preload ./happydom.ts ./tests/unit",
+        "test": "bun test --preload ./happydom.ts ./tests/unit/hooks && bun test --preload ./happydom.ts ./tests/unit/components",
         "test:e2e": "MINO_ENV=test bun run --env-file=.env playwright test"
     },
     "dependencies": {
