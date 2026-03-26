@@ -1,5 +1,6 @@
 export enum EditorAttributes {
     DATA_MINO_IGNORE = 'data-mino-ignore',
+    DATA_MINO_DRAG_SAVED_STYLE = 'data-mino-drag-saved-style',
 
     // Ids
     DATA_MINO_ID = 'data-oid',
