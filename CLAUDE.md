@@ -1,150 +1,95 @@
-# AGENTS.md
+# CLAUDE.md
 
-This document is for code agents working in this repository. It summarizes how the codebase is organized, how to run it safely, and what to prioritize when making changes.
+Instructions for AI agents working in this repository.
 
 ## Stack
 
-- Monorepo workspace managed by Bun (`bun@1.3.1`), with hoisted installs.
-- Frontend app: Next.js `16.0.7` + React `19`.
-- API layer: tRPC v11 (Next route handler + React/RSC clients).
-- Auth/session: Supabase (`@supabase/ssr`, `@supabase/supabase-js`).
-- Database: PostgreSQL + Drizzle ORM + Drizzle Kit.
-- Styling/UI: Tailwind CSS v4 + shared `@mino/ui` package + Sonner toasts.
-- Validation/env: Zod + `@t3-oss/env-nextjs`.
-- Testing: Bun test runner, Happy DOM preload, Testing Library.
-- Lint/format/type safety: ESLint, TypeScript shared configs in `tooling/`.
+- Bun `1.3.9` monorepo with hoisted installs.
+- Next.js `16.0.7` + React `19` (app router, RSC, server actions).
+- tRPC v11 (route handler + React Query client).
+- Supabase auth/session (`@supabase/ssr`).
+- PostgreSQL + Drizzle ORM `0.44.7`.
+- Tailwind CSS v4 + Radix UI + Sonner toasts via `@mino/ui`.
+- Zod `4.3.5` + `@t3-oss/env-nextjs` for validation.
+- TypeScript `5.8.2`, ESLint, Prettier configs in `tooling/`.
 
-## Folder Structure
+## Packages
 
-Top-level:
+| Package | Purpose |
+|---------|---------|
+| `apps/web/client` | Next.js web app (routes, tRPC API, auth) |
+| `apps/web/preload` | DOM processing & style extraction for the editor (runs in iframe) |
+| `apps/backend/supabase` | Supabase config + SQL migrations |
+| `packages/db` | Drizzle schema, client, defaults, migrations |
+| `packages/models` | Shared domain types/enums (`Project`, `SignInMethod`, `SandboxProvider`, `SandboxFile`) |
+| `packages/code-provider` | Abstract sandbox provider (CodeSandbox + NodeFs implementations) |
+| `packages/ui` | Shared UI components (Radix, icons, select, skeleton) |
+| `packages/utility` | Helpers (date, file, folder, id, token, name parsing) |
+| `tooling/eslint` | Shared ESLint presets |
+| `tooling/typescript` | Shared TS configs (base, next-react, vite-react) |
+| `tooling/prettier` | Shared Prettier config |
 
-- `apps/web/client`: Main Next.js web app (app router).
-- `apps/backend/supabase`: Local Supabase config + SQL migrations output.
-- `packages/db`: Drizzle schema, DB client, seed constants, migration config.
-- `packages/models`: Shared domain enums/types (e.g. sign-in methods).
-- `packages/utility`: Shared helpers (e.g. name parsing).
-- `packages/ui`: Shared UI components and utilities.
-- `tooling/eslint`: Shared ESLint presets.
-- `tooling/typescript`: Shared TypeScript presets.
+## Key App Paths
 
-Important app paths:
+- `src/proxy.ts` — Next.js 16 request proxy (session refresh, auth redirects). **Not** `middleware.ts`.
+- `src/app/login/` — Login page + server actions (OAuth/dev).
+- `src/app/auth/callback/` — OAuth code exchange + user upsert.
+- `src/app/projects/` — Protected projects list (CRUD, filtering, sandbox creation).
+- `src/app/project/[id]/` — Project editor page.
+- `src/server/api/trpc.ts` — tRPC context (`db`, `supabase`, `user`), `publicProcedure`, `protectedProcedure`.
+- `src/server/api/routers/` — `user/`, `project/` (project, branch, sandbox, github).
+- `src/utils/supabase/` — Browser/server/middleware Supabase clients.
 
-- `apps/web/client/src/app/*`: Routes, pages, server actions, auth callback.
-- `apps/web/client/src/server/api/*`: tRPC context/router/procedures.
-- `apps/web/client/src/utils/supabase/*`: Browser/server/middleware clients.
-- `apps/web/client/src/proxy.ts`: Next.js 16 proxy file (auth gating).
-- `apps/web/client/tests/unit/*`: Current UI/context unit tests.
+All paths relative to `apps/web/client/`.
 
-## Architecture
+## Auth Flow
 
-High-level request flow:
+`proxy.ts` refreshes session → login via server actions (OAuth/dev) → Supabase redirects to `/auth/callback` → callback exchanges code, upserts user via tRPC server caller → redirect to `/projects`. `protectedProcedure` enforces authenticated user with email. Ownership checks are server-side.
 
-1. `src/proxy.ts` runs on requests, refreshes Supabase session, redirects for auth/public/protected paths.
-2. UI uses server actions (`src/app/login/actions.ts`) for OAuth/dev login start.
-3. Supabase callback route (`src/app/auth/callback/route.ts`) exchanges code for session and upserts app user via tRPC server caller.
-4. tRPC API is served from `src/app/api/trpc/[trpc]/route.ts`.
-5. tRPC context (`src/server/api/trpc.ts`) builds per-request context with:
-   - `db` from `@mino/db/src/client`
-   - Supabase server client
-   - `user` from `supabase.auth.getUser()`
-6. `protectedProcedure` enforces authenticated user with email.
-7. Data layer writes through Drizzle schemas in `packages/db/src/schema/*`.
+## Scripts
 
-Auth-specific notes:
-
-- Redirect control flow is exception-based in Next.js. Client-side catch blocks intentionally filter redirect errors via `isRedirectError(...)`.
-- `user.upsert` in `src/server/api/routers/user/user.ts` includes an ownership check (`input.id !== authUser.id` => `FORBIDDEN`) and explicit conflict update fields.
-
-## Necessary Scripts
-
-Workspace root (`/`):
-
-- `bun install`
-- `bun run dev` (starts `@mino/web` dev)
-- `bun run build`
-- `bun run lint`
-- `bun run format`
-- `bun run typecheck`
-- `bun run test`
+Root:
+```bash
+bun install / bun run dev / bun run build
+bun run lint / bun run format / bun run typecheck / bun run test
+bun run db:gen / bun run db:push
+```
 
 Web client (`apps/web/client`):
+```bash
+bun run dev          # next dev --turbo
+bun run test         # unit tests (Bun + Happy DOM)
+bun run test:e2e     # Playwright e2e (Chrome)
+```
 
-- `bun run dev` (`next dev --turbo`)
-- `bun run build`
-- `bun run lint`
-- `bun run format`
-- `bun run typecheck`
-- `bun run test` (Bun test with Happy DOM preload)
+Database (`packages/db`):
+```bash
+bun run db:gen / db:push / db:migrate / db:studio
+```
 
-## Environment Setup
+## Testing
 
-Main env vars live in `apps/web/client/src/env.ts` and `.env.example`.
+- **Unit**: Bun test runner + Happy DOM preload + Testing Library. Tests in `apps/web/client/tests/unit/hooks/` and `tests/unit/components/`. Hooks run first, components second (separate processes to prevent mock bleed).
+- **E2E**: Playwright (Chrome, single worker). Tests in `apps/web/client/tests/e2e/`. Requires `MINO_ENV=test` and test Supabase env vars.
 
-Required:
+## CI
 
-- `SUPABASE_DATABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
-- `NEXT_PUBLIC_SITE_URL`
-- `NODE_ENV`
+GitHub Actions runs on push/PR: **format → lint → typecheck → test → playwright**. All five must pass.
 
-Notes:
+## Environment
 
-- Env validation runs at import-time in many server modules.
-- For tests/tools where env is intentionally missing, use `SKIP_ENV_VALIDATION` only when truly needed.
+Validated at import-time via `apps/web/client/src/env.ts`. Required: `SUPABASE_DATABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SITE_URL`, `NODE_ENV`. Use `SKIP_ENV_VALIDATION` only when truly needed (e.g. tests without env).
 
-## Agent Priorities
+## Rules
 
-1. Preserve auth correctness and access control.
-2. Keep API contracts and shared package exports stable.
-3. Favor minimal, high-signal changes over broad refactors.
-4. Ensure changed code passes lint/typecheck/tests for touched scope.
-5. Keep server/client boundaries explicit (no accidental server-only code in client paths).
-
-## Rules for Agents
-
-- Prefer Bun workspace commands and `--filter` where possible.
-- Do not add new package managers or lockfiles.
-- Do not edit generated build output (`.next`, caches, temp files).
-- Avoid touching unrelated packages for feature-local changes.
-- Keep tRPC auth checks at procedure level (`protectedProcedure` and route-specific authorization).
-- For user-owned resources, enforce ownership server-side even if UI already constrains input.
-- In client auth handlers, do not treat Next redirect exceptions as normal errors.
-- Keep changes consistent with existing style and config packages in `tooling/`.
-
-## Context Discipline (for Agents)
-
-- Read only what is needed to complete the task:
-  - Start from touched feature folder.
-  - Then expand to shared package(s) it imports.
-- Ignore `node_modules`, `.next`, and other generated directories.
+- Use Bun workspace commands (`--filter`) consistently. No other package managers.
+- Do not edit generated output (`.next`, caches, migrations output).
+- Keep tRPC auth at procedure level. Enforce ownership server-side.
+- Next.js redirects throw special errors — do not log/toast them as failures. Filter via `isRedirectError(...)`.
+- `publicProcedure` context must tolerate logged-out users. `AuthSessionMissingError` is normal.
+- Keep `onConflictDoUpdate.set` fields explicit — never mutate immutable identity fields.
+- `proxy.ts` is the Next.js 16 convention. Do not rename to `middleware.ts`.
+- Favor minimal changes. Avoid broad refactors. Keep server/client boundaries explicit.
+- Before changing auth/data flow, read: `proxy.ts`, `login/actions.ts`, `auth/callback/route.ts`, `server/api/trpc.ts`, and relevant routers.
 - Verify import paths against real file tree before refactors.
-- Before changing auth/data flow, inspect:
-  - `src/proxy.ts`
-  - `src/app/login/actions.ts`
-  - `src/app/auth/callback/route.ts`
-  - `src/server/api/trpc.ts`
-  - `src/server/api/routers/*`
-- When testing, isolate to smallest relevant command first (single file/package), then widen if needed.
-
-## Common Pitfalls
-
-- Next.js 16 uses `proxy.ts` convention; do not rename to `middleware.ts` unless intentionally migrating.
-- Redirects in server actions throw special errors; logging/toasting them as failures causes false-positive UX errors.
-- Env validation can fail tests early if required vars are absent.
-- `publicProcedure` still creates context; context creation should tolerate logged-out users.
-- `AuthSessionMissingError` is a normal logged-out state in many flows, not always a fatal auth outage.
-- Keep `onConflictDoUpdate.set` explicit; avoid accidentally mutating immutable identity fields.
-- `userInsertSchema` includes many fields; avoid trusting client-controlled identity fields for authorization decisions.
-- The root has `bun.lock`; use Bun workflow consistently.
-
-## Current CI Expectations
-
-GitHub Actions runs:
-
-1. format
-2. lint
-3. typecheck
-4. test
-
-Agents should aim to keep all four green for touched scope before finalizing significant changes.
+- Ensure changed code passes lint/typecheck/tests for touched scope.

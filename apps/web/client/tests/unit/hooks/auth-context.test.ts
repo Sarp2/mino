@@ -8,6 +8,10 @@ import { AuthProvider, useAuthContext } from '@/app/auth/auth-context';
 const mockLogin = mock();
 const mockDevLogin = mock();
 
+await mock.module('localforage', () => ({
+    default: { setItem: mock(() => Promise.resolve()) },
+}));
+
 await mock.module('@/app/login/actions', () => ({
     login: mockLogin,
     devLogin: mockDevLogin,

@@ -128,6 +128,8 @@ await mock.module('@/app/auth/auth-context', () => ({
         handleLogin: mock(),
         handleDevLogin: mock(),
         signingInMethod: null,
+        isAuthModalOpen: false,
+        setIsAuthModalOpen: mock(),
     }),
 }));
 

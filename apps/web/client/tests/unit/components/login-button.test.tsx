@@ -26,6 +26,8 @@ await mock.module('@/app/auth/auth-context', () => ({
         handleLogin: mockHandleLogin,
         handleDevLogin: mockHandleDevLogin,
         signingInMethod: mockState.signingInMethod,
+        isAuthModalOpen: false,
+        setIsAuthModalOpen: mock(),
     }),
 }));
 
