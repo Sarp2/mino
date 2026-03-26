@@ -49,21 +49,21 @@ All paths relative to `apps/web/client/`.
 ## Scripts
 
 Root:
-```
+```bash
 bun install / bun run dev / bun run build
 bun run lint / bun run format / bun run typecheck / bun run test
 bun run db:gen / bun run db:push
 ```
 
 Web client (`apps/web/client`):
-```
+```bash
 bun run dev          # next dev --turbo
 bun run test         # unit tests (Bun + Happy DOM)
 bun run test:e2e     # Playwright e2e (Chrome)
 ```
 
 Database (`packages/db`):
-```
+```bash
 bun run db:gen / db:push / db:migrate / db:studio
 ```
 
