@@ -150,6 +150,16 @@
         "typescript": "^5.5.4",
       },
     },
+    "packages/penpal": {
+      "name": "@mino/penpal",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@mino/eslint": "*",
+        "@mino/typescript": "*",
+        "eslint": "^9.0.0",
+        "typescript": "^5.5.4",
+      },
+    },
     "packages/ui": {
       "name": "@mino/ui",
       "version": "0.0.0",
@@ -446,6 +456,8 @@
     "@mino/eslint": ["@mino/eslint@workspace:tooling/eslint"],
 
     "@mino/models": ["@mino/models@workspace:packages/models"],
+
+    "@mino/penpal": ["@mino/penpal@workspace:packages/penpal"],
 
     "@mino/prettier": ["@mino/prettier@workspace:tooling/prettier"],
 
