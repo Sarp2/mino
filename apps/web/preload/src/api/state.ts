@@ -1,5 +1,4 @@
-// TODO: change this after building penpal directory
-export const penpalParent: unknown = null;
+import { penpalParent } from '..';
 
 /** Stores the frame id on the window obejct so all preload functions can access with iframe they belong to */
 export function setFrameId(frameId: string) {
@@ -9,8 +8,19 @@ export function setFrameId(frameId: string) {
 
 /** Reads the frame id from window. If missing, asks the parent editor via penpal as a fallback */
 export function getFrameId(): string {
-    // TODO: build it when penpal directory ready
-    return 'unimplemented';
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+    const frameId = (window as any)._minoFrameId;
+    if (!frameId) {
+        console.warn('Frame id not found');
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        penpalParent?.getFrameId().then((id) => {
+            setFrameId(id);
+        });
+        return '';
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return frameId;
 }
 
 /** Stores the branch id on the window object */
@@ -21,6 +31,17 @@ export function setBranchId(branchId: string) {
 
 /** Reads the branch id from window. If missing, asks the parent editor via penpal as a fallback */
 export function getBranchId(): string {
-    // TODO: build it when penpal directory ready
-    return 'unimplemented';
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+    const branchId = (window as any)._minoBranchId;
+    if (!branchId) {
+        console.warn('Branch id not found');
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        penpalParent?.getBranchId().then((id) => {
+            setBranchId(id);
+        });
+
+        return '';
+    }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return branchId;
 }
