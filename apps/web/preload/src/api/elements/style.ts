@@ -1,6 +1,6 @@
 import type { DomElementStyles } from '@mino/models';
 
-import { getHTMLElement, jsonClone } from '@/helpers';
+import { getHTMLElement, jsonClone } from '../../helpers';
 
 /** Collects all styles from an element from 3 sources: computed (final browser rules), inline (style attribute), and stylesheet (CSS rules). Returns both "defined" styles and "computed" styles */
 export function getStyles(element: HTMLElement): DomElementStyles {

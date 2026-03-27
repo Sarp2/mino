@@ -1,4 +1,4 @@
-import { DOM_IGNORE_TAGS, EditorAttributes } from '@/constants';
+import { DOM_IGNORE_TAGS, EditorAttributes } from '../constants';
 
 /** Finds an HTML element in the document by its mino id attribute */
 export function getHTMLElement(domId: string): HTMLElement | null {

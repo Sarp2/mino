@@ -1,7 +1,7 @@
 import type { DomElement } from '@mino/models';
 
-import { EditorAttributes } from '@/constants';
-import { getHTMLElement } from '@/helpers';
+import { EditorAttributes } from '../../constants';
+import { getHTMLElement } from '../../helpers';
 import { getDomElement } from './helpers';
 
 /** Looks up an element by its dom id and returns it as a **DomElement** object. */

@@ -2,9 +2,9 @@ import debounce from 'lodash.debounce';
 
 import type { LayerNode } from '@mino/models';
 
-import { EditorAttributes } from '@/constants';
-import { isValidHTMLElement } from '@/helpers';
-import { getInstanceId, getOid, getOrAssignDomId } from '@/helpers/ids';
+import { EditorAttributes } from '../constants';
+import { isValidHTMLElement } from '../helpers';
+import { getInstanceId, getOid, getOrAssignDomId } from '../helpers/ids';
 import { getFrameId } from './state';
 
 export interface ProcessDomResult {

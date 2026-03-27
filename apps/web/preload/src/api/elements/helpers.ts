@@ -4,8 +4,8 @@ import type {
     ParentDomElement,
 } from '@mino/models';
 
-import { EditorAttributes } from '@/constants';
-import { getInstanceId, getOid } from '@/helpers/ids';
+import { EditorAttributes } from '../../constants';
+import { getInstanceId, getOid } from '../../helpers/ids';
 import { getBranchId, getFrameId } from '../state';
 import { getStyles } from './style';
 

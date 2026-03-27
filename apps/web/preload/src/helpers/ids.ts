@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid/non-secure';
 
-import { EditorAttributes } from '@/constants';
+import { EditorAttributes } from '../constants';
 
 /** Reads the dom id from an element's data attribute. If it doesn't have one, generates a nanoid and assigns it. */
 export function getOrAssignDomId(node: HTMLElement): string {
