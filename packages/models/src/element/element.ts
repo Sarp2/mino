@@ -19,3 +19,21 @@ export interface DomElementStyles {
     defined: Record<string, string>; // Styles from stylesheets or inline
     computed: Record<string, string>; // Browser computed styles
 }
+
+export interface ElementPosition {
+    x: number;
+    y: number;
+}
+
+export interface DropElementProperties {
+    tagName: string;
+    styles: Record<string, string>;
+    textContent: string;
+}
+
+export interface RectDimensions {
+    width: number;
+    height: number;
+    top: number;
+    left: number;
+}
