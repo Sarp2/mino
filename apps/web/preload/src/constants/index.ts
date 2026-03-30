@@ -4,6 +4,10 @@ export enum EditorAttributes {
     MINO_STUB_ID = 'mino-drag-stub',
     DATA_MINO_INSERTED = 'data-mino-inserted',
     DATA_MINO_EDITING_TEXT = 'data-mino-editing-text',
+    MINO_STYLESHEET_ID = 'mino-stylesheet',
+    DATA_MINO_DRAG_START_POSITION = 'data-mino-drag-start-position',
+    DATA_MINO_DRAGGING = 'data-mino-dragging',
+    DATA_MINO_DRAG_DIRECTION = 'data-mino-drag-direction',
 
     // Ids
     DATA_MINO_ID = 'data-oid',
@@ -13,3 +17,9 @@ export enum EditorAttributes {
 }
 
 export const DOM_IGNORE_TAGS = ['SCRIPT', 'STYLE', 'LINK', 'META', 'NOSCRIPT'];
+
+export enum SystemTheme {
+    LIGHT = 'light',
+    DARK = 'dark',
+    SYSTEM = 'system',
+}
