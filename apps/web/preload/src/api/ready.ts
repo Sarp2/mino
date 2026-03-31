@@ -1,12 +1,12 @@
 import { processDom } from './dom';
 import { listenForDomChanges } from './events';
+import { cssManager } from './style';
 
 /** Called by the parent via penpal once connected. Starts DOM listeners, update polling, and injects default mino styles.  */
 export function handleBodyReady() {
     listenForDomChanges();
     keepDomUpdated();
-    // TODO: Uncomment it out when cssManager is wrriten
-    // cssManager.injectDefaultStyles();
+    cssManager.injectDefaultStyles();
 }
 
 let domUpdateInterval: ReturnType<typeof setInterval> | null = null;

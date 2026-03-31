@@ -5,6 +5,7 @@ import type { LayerNode } from '@mino/models';
 import { EditorAttributes } from '../constants';
 import { isValidHTMLElement } from '../helpers';
 import { getInstanceId, getOid, getOrAssignDomId } from '../helpers/ids';
+import { publishDomProcessed } from './events/publish';
 import { getFrameId } from './state';
 
 export interface ProcessDomResult {
@@ -39,8 +40,7 @@ function processDomDebounced(
         return null;
     }
 
-    // TODO: Implement it when finished the penpal directory
-    // publishDomProcessed(layerMap, rootNode);
+    publishDomProcessed(layerMap, rootNode);
 
     return { rootDomId, layerMap: Array.from(layerMap.entries()) };
 }
