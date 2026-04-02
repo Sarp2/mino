@@ -17,6 +17,7 @@ const findMinoParent = (): Window => {
         console.warn(
             `${PENPAL_CHILD_CHANNEL} - Not in an iframe, using window.parent as fallback`,
         );
+        return window.parent;
     }
 
     // Check if we're in a direct iframe (parent is the top window)
@@ -29,6 +30,7 @@ const findMinoParent = (): Window => {
         console.log(
             `${PENPAL_CHILD_CHANNEL} - Using window.top for nested iframe scenario`,
         );
+        return window.top;
     }
 
     // Final fallback
