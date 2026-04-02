@@ -48,7 +48,7 @@ export function getElementIndex(domId: string): number {
     return index;
 }
 
-/** Removes the element from its parent and reinserts it at newIndex. Appends to end if newIndex exceeds children length */
+/** Removes the element from its parent and reinserts it at newIndex among valid HTML children. Appends to end if newIndex exceeds children length */
 export function moveElToIndex(
     el: HTMLElement,
     newIndex: number,
@@ -59,13 +59,20 @@ export function moveElToIndex(
         return;
     }
 
+    const children = Array.from(parent.children).filter(
+        (child): child is HTMLElement =>
+            child !== el && isValidHTMLElement(child),
+    );
+
+    const clampedIndex = Math.max(0, Math.min(newIndex, children.length));
     parent.removeChild(el);
-    if (newIndex >= parent.children.length) {
+
+    const referencedNode = children[clampedIndex];
+    if (!referencedNode) {
         parent.appendChild(el);
         return el;
     }
 
-    const referencedNode = parent.children[newIndex];
-    parent.insertBefore(el, referencedNode ?? null);
+    parent.insertBefore(el, referencedNode);
     return el;
 }
