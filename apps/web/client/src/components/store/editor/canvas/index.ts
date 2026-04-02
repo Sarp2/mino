@@ -19,9 +19,10 @@ export class CanvasManager {
     }
 
     applyCanvas(canvas: Canvas) {
-        this.id = canvas.id;
-        this.scale = canvas.scale ?? 0.7;
-        this.position = canvas.position ?? this.getDefaultPanPosition();
+        this.saveCanvas.cancel();
+        this._id = canvas.id;
+        this._scale = canvas.scale ?? 0.7;
+        this._position = canvas.position ?? this.getDefaultPanPosition();
     }
 
     getDefaultPanPosition(): RectPosition {
@@ -88,7 +89,8 @@ export class CanvasManager {
     }
 
     clear() {
+        this.saveCanvas.cancel();
         this._scale = 0.7;
-        this._position = { x: 175, y: 100 };
+        this._position = this.getDefaultPanPosition();
     }
 }
