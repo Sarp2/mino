@@ -45,6 +45,7 @@ const createMessageConnection = async () => {
 
     const messenger = new WindowMessenger({
         remoteWindow: findMinoParent(),
+        // TODO: Replace with specific parent origin before production
         allowedOrigins: ['*'],
     });
 

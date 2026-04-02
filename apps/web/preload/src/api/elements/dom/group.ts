@@ -90,10 +90,10 @@ export function ungroupElements(
         return null;
     }
 
-    // Move all children of the container to the parent
+    // Move all children of the container to the parent, preserving position
     const children = Array.from(containerEl.children) as HTMLElement[];
     children.forEach((child) => {
-        parentEl.appendChild(child);
+        parentEl.insertBefore(child, containerEl);
     });
 
     // Remove the empty container
