@@ -13,8 +13,6 @@ export function getOrAssignDomId(node: HTMLElement): string {
     return domId;
 }
 
-export const VALID_DATA_ATTR_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789-._:';
-
 /** Reads the source-code-level identifier (oid). This is stable across renders - it maps back to a specific JSX element in the user's code */
 export function getOid(node: HTMLElement): string | null {
     return node.getAttribute(EditorAttributes.DATA_MINO_ID);

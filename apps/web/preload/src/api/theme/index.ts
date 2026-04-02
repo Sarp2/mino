@@ -3,10 +3,15 @@ import { SystemTheme } from '../../constants';
 /** Returns the current theme from localStorage, defaults to light. */
 export function getTheme(): SystemTheme {
     try {
-        return (
-            (window?.localStorage.getItem('theme') as SystemTheme) ||
-            SystemTheme.LIGHT
-        );
+        const stored = window?.localStorage.getItem('theme');
+        if (
+            stored === SystemTheme.LIGHT ||
+            stored === SystemTheme.DARK ||
+            stored === SystemTheme.SYSTEM
+        ) {
+            return stored;
+        }
+        return SystemTheme.LIGHT;
     } catch (error) {
         console.warn('Failed to get theme', error);
         return SystemTheme.LIGHT;

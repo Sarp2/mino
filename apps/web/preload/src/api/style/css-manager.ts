@@ -29,7 +29,7 @@ class CSSManager {
             `;
             document.head.appendChild(styleElement);
         } catch (error) {
-            console.warn('Error injecting default styless', error);
+            console.warn('Error injecting default styles', error);
         }
     }
 
