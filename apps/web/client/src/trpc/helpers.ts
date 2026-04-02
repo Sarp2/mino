@@ -11,7 +11,7 @@ export function getBaseUrl() {
 }
 
 /* Shared tRPC transport pipeline: dev logger + batched streaming HTTP link */
-export const links = [
+export const createLinks = (source: 'react-client' | 'vanilla-client') => [
     loggerLink({
         enabled: (op) =>
             // eslint-disable-next-line no-restricted-properties
@@ -23,7 +23,7 @@ export const links = [
         url: getBaseUrl() + '/api/trpc',
         headers: () => {
             const headers = new Headers();
-            headers.set('x-trpc-source', 'vanilla-client');
+            headers.set('x-trpc-source', source);
             return headers;
         },
     }),

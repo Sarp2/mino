@@ -8,7 +8,7 @@ import { type inferRouterInputs, type inferRouterOutputs } from '@trpc/server';
 import type { QueryClient } from '@tanstack/react-query';
 
 import { type AppRouter } from '@/server/api/root';
-import { links } from './helpers';
+import { createLinks } from './helpers';
 import { createQueryClient } from './query-client';
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
@@ -42,7 +42,9 @@ export type RouterOutputs = inferRouterOutputs<AppRouter>;
 export function TRPCReactProvider(props: { children: React.ReactNode }) {
     const queryClient = getQueryClient();
 
-    const [trpcClient] = useState(() => api.createClient({ links }));
+    const [trpcClient] = useState(() =>
+        api.createClient({ links: createLinks('react-client') }),
+    );
 
     return (
         <QueryClientProvider client={queryClient}>
