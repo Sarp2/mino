@@ -8,7 +8,7 @@ export type PenpalParentMethods = {
         removed: Record<string, LayerNode>;
     }) => void;
     onWindowResized: () => void;
-    onDomProccesed: (data: {
+    onDomProcessed: (data: {
         layerMap: Record<string, LayerNode>;
         rootNode: LayerNode;
     }) => void;

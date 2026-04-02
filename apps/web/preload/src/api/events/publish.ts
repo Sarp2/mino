@@ -6,7 +6,7 @@ export function publishDomProcessed(layerMap: Map<string, any>, rootNode: any) {
     if (!penpalParent) return;
 
     penpalParent
-        .onDomProccesed({
+        .onDomProcessed({
             layerMap: Object.fromEntries(layerMap),
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             rootNode,
