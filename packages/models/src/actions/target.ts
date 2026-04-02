@@ -2,7 +2,7 @@ import type { StyleChange } from '../style';
 
 export type Change<T> = {
     updated: T;
-    orignal: T;
+    original: T;
 };
 
 export interface ActionTarget {

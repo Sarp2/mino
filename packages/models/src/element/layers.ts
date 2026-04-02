@@ -17,7 +17,7 @@ export interface LayerNode {
     textContent: string;
     tagName: string;
     isVisible: boolean;
-    dyanmicType: DynamicType | null;
+    dynamicType: DynamicType | null;
     coreElementType: CoreElementType | null;
     component: string | null;
     children: string[] | null;
