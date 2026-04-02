@@ -34,13 +34,13 @@ function keepDomUpdated() {
     domUpdateInterval = interval;
 }
 
-/** Polls every 300ms until document.body exists, then calls handleBodyReady(). Also attaches window.onerror for early error capture. */
-const handleDocumentBody = setInterval(() => {
-    window.onerror = function logError(errorMsg, url, lineNumber) {
-        // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-        console.log(`Unhandled error: ${errorMsg} ${url} ${lineNumber}`);
-    };
+window.onerror = function logError(errorMsg, url, lineNumber) {
+    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
+    console.log(`Unhandled error: ${errorMsg} ${url} ${lineNumber}`);
+};
 
+/** Polls every 300ms until document.body exists, then calls handleBodyReady(). */
+const handleDocumentBody = setInterval(() => {
     if (window?.document?.body) {
         clearInterval(handleDocumentBody);
         try {
