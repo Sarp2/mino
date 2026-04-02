@@ -11,8 +11,8 @@ export function getStyles(element: HTMLElement): DomElementStyles {
     const defined = {
         width: 'auto',
         height: 'auto',
-        ...inline,
         ...stylesheet,
+        ...inline,
     };
 
     return { defined, computed };
