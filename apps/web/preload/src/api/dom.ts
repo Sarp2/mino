@@ -1,5 +1,3 @@
-import debounce from 'lodash.debounce';
-
 import type { LayerNode } from '@mino/models';
 
 import { EditorAttributes } from '../constants';
@@ -13,7 +11,7 @@ export interface ProcessDomResult {
     layerMap: Array<[string, LayerNode]>;
 }
 
-function processDomDebounced(
+function processDomInner(
     root: HTMLElement = document.body,
 ): ProcessDomResult | null {
     const frameId = getFrameId();
@@ -45,8 +43,12 @@ function processDomDebounced(
     return { rootDomId, layerMap: Array.from(layerMap.entries()) };
 }
 
-/** Walks the DOM starting from root (defaults to document.body), builds a layer tree map of all elements, and sends it to the parent editor. Returns null if frameId isn't set yet or if the root element hasn't been assigned a dom id. Debounced by 500ms to avoid excessive processing during rapid DOM changes */
-export const processDom = debounce(processDomDebounced, 500);
+/** Walks the DOM starting from root (defaults to document.body), builds a layer tree map of all elements, and sends it to the parent editor. Returns null if frameId isn't set yet or if the root element hasn't been assigned a dom id. */
+export function processDom(
+    root: HTMLElement = document.body,
+): ProcessDomResult | null {
+    return processDomInner(root);
+}
 
 // Filter conditions for nodes to reject in layer tree.
 // TODO: Add more conditions for different frameworks in the future

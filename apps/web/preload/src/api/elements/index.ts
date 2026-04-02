@@ -8,8 +8,9 @@ import { getDomElement } from './helpers';
 export function getElementByDomId(
     domId: string,
     getStyle: boolean,
-): DomElement {
-    const el = getHTMLElement(domId) ?? document.body;
+): DomElement | null {
+    const el = getHTMLElement(domId);
+    if (!el) return null;
     return getDomElement(el, getStyle);
 }
 
