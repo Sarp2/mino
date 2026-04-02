@@ -1,6 +1,6 @@
 import type { DomElementStyles } from '@mino/models';
 
-import { getHTMLElement, jsonClone } from '../../helpers';
+import { getHTMLElement } from '../../helpers';
 
 /** Collects all styles from an element from 3 sources: computed (final browser rules), inline (style attribute), and stylesheet (CSS rules). Returns both "defined" styles and "computed" styles */
 export function getStyles(element: HTMLElement): DomElementStyles {
@@ -28,11 +28,12 @@ export function getComputedStyleByDomId(domId: string): Record<string, string> {
 
 /** Returns the final computed style of an element as a plain object - this is what the browser actually renders (after cascade, inheritance, and defaults) */
 function getElComputedStyle(element: HTMLElement): Record<string, string> {
-    const computedStyle = jsonClone(
-        window.getComputedStyle(element),
-    ) as unknown as Record<string, string>;
-
-    return computedStyle;
+    const computed = window.getComputedStyle(element);
+    const styles: Record<string, string> = {};
+    for (const prop of computed) {
+        styles[prop] = computed.getPropertyValue(prop);
+    }
+    return styles;
 }
 
 /** Read styles set directly on the element via the style attribute (e.g. style="color: red")  */
