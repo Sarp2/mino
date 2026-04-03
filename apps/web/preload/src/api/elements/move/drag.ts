@@ -189,7 +189,7 @@ export function endDrag(
 /** Saves all relevant style properties before dragging so they can be restored on endDrag. No-ops if already saved. */
 function prepareElementForDragging(el: HTMLElement) {
     const saved = el.getAttribute(EditorAttributes.DATA_MINO_DRAG_SAVED_STYLE);
-    if (!saved) return;
+    if (saved) return;
 
     // Save all relevant style properties for later restoration
     const style = {
