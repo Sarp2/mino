@@ -84,5 +84,7 @@ export function getOffset(domId: string) {
     const el = getHTMLElement(domId);
     if (!el) return null;
 
-    return getDomElement(el.offsetParent as HTMLElement, false);
+    const offsetParent = el.offsetParent;
+    if (!(offsetParent instanceof HTMLElement)) return null;
+    return getDomElement(offsetParent, false);
 }
