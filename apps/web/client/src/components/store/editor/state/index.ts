@@ -33,7 +33,9 @@ export class StateManager {
 
     set canvasScrolling(value: boolean) {
         this._canvasScrolling = value;
-        this.resetCanvasScrolling();
+        if (value) {
+            this.resetCanvasScrolling();
+        }
     }
 
     get shouldHideOverlay() {
@@ -45,7 +47,7 @@ export class StateManager {
     }
 
     private resetCanvasScrollingDebounced = debounce(() => {
-        this.canvasScrolling = false;
+        this._canvasScrolling = false;
     }, 150);
 
     clear() {
@@ -54,5 +56,6 @@ export class StateManager {
         this.branchTab = null;
         this.manageBranchId = null;
         this.resetCanvasScrollingDebounced.cancel();
+        this._canvasScrolling = false;
     }
 }
