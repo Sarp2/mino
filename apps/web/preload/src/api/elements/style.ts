@@ -90,7 +90,9 @@ function parseCssText(cssText: string) {
         if (!style) return;
 
         const [property, ...values] = style.split(':');
-        styles[property?.trim() ?? ''] = values.join(':').trim();
+        const key = property?.trim();
+        if (!key) return;
+        styles[key] = values.join(':').trim();
     });
     return styles;
 }
