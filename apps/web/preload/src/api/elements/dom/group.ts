@@ -115,7 +115,7 @@ function createContainerElement(target: GroupContainer): HTMLElement {
     });
 
     containerEl.setAttribute(EditorAttributes.DATA_MINO_INSERTED, 'true');
-    containerEl.setAttribute(EditorAttributes.DATA_MINO_ID, target.domId);
+    containerEl.setAttribute(EditorAttributes.DATA_MINO_DOM_ID, target.domId);
     containerEl.setAttribute(EditorAttributes.DATA_MINO_ID, target.oid);
 
     return containerEl;
