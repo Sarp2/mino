@@ -42,9 +42,9 @@ window.onerror = function logError(errorMsg, url, lineNumber) {
 /** Polls every 300ms until document.body exists, then calls handleBodyReady(). */
 const handleDocumentBody = setInterval(() => {
     if (window?.document?.body) {
-        clearInterval(handleDocumentBody);
         try {
             handleBodyReady();
+            clearInterval(handleDocumentBody);
         } catch (error) {
             console.log('Error in documentBodyInit: ', error);
         }
