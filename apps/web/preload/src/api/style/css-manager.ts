@@ -173,29 +173,26 @@ class CSSManager {
 
     updateRule(rule: Rule, property: string, value: string) {
         let found = false;
+        let shouldRemove = false;
         walk(rule.block, {
             visit: 'Declaration',
             enter: (decl: Declaration) => {
                 if (decl.property === property) {
                     decl.value = { type: 'Raw', value: value };
-                    if (value === '') {
-                        rule.block.children = rule.block.children.filter(
-                            (decl: CssNode) =>
-                                (decl as Declaration).property !== property,
-                        );
-                    }
+                    shouldRemove = value === '';
                     found = true;
                 }
             },
         });
 
+        if (shouldRemove) {
+            rule.block.children = rule.block.children.filter(
+                (decl: CssNode) => (decl as Declaration).property !== property,
+            );
+        }
+
         if (!found) {
-            if (value === '') {
-                rule.block.children = rule.block.children.filter(
-                    (decl: CssNode) =>
-                        (decl as Declaration).property !== property,
-                );
-            } else {
+            if (value !== '') {
                 rule.block.children.push({
                     type: 'Declaration',
                     property: property,
