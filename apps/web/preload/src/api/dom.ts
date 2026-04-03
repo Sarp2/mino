@@ -34,7 +34,7 @@ function processDomInner(
 
     const rootNode = layerMap.get(rootDomId);
     if (!rootNode) {
-        console.warn('Root node found');
+        console.warn('Root not node found');
         return null;
     }
 

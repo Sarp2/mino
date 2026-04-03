@@ -55,7 +55,7 @@ function withTryCatch<T extends (...args: any[]) => any>(fn: T): T {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-return
             return fn(...args);
         } catch (error) {
-            console.log(`Error in ${fn.name}:`, error);
+            console.error(`Error in ${fn.name}:`, error);
             return null;
         }
     }) as T;
