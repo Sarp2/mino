@@ -79,7 +79,7 @@ export function dragAbsolute(
         const newLeft = x - parentRect.left - (origin.x - pos.offset.x);
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const newTop = x - parentRect.top - (origin.y - pos.offset.y);
+        const newTop = y - parentRect.top - (origin.y - pos.offset.y);
 
         el.style.left = `${newLeft}px`;
         el.style.top = `${newTop}px`;
