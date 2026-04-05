@@ -4,6 +4,7 @@ export * from './project/create';
 export * from './project/branch';
 export * from './project/rect';
 export * from './project/canvas';
+export * from './project/frame';
 export * from './sandbox';
 export * from './provider';
 export * from './editor';
