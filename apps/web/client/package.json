@@ -17,6 +17,7 @@
         "@mino/models": "*",
         "@mino/ui": "*",
         "@mino/utility": "*",
+        "@mino/penpal": "*",
         "@octokit/rest": "^22.0.1",
         "@supabase/ssr": "^0.8.0",
         "@supabase/supabase-js": "^2.93.3",

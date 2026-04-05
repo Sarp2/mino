@@ -37,6 +37,7 @@
       "dependencies": {
         "@mino/db": "*",
         "@mino/models": "*",
+        "@mino/penpal": "*",
         "@mino/ui": "*",
         "@mino/utility": "*",
         "@octokit/rest": "^22.0.1",
@@ -187,6 +188,7 @@
       "name": "@mino/utility",
       "version": "0.0.0",
       "dependencies": {
+        "@mino/models": "*",
         "mime-lite": "^1.0.3",
       },
       "devDependencies": {
