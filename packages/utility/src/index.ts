@@ -4,3 +4,4 @@ export * from './folder';
 export * from './id';
 export * from './date';
 export * from './token';
+export * from './frame';

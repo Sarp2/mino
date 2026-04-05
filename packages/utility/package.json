@@ -19,6 +19,7 @@
         "typescript": "^5.5.4"
     },
     "dependencies": {
-        "mime-lite": "^1.0.3"
+        "mime-lite": "^1.0.3",
+        "@mino/models": "*"
     }
 }
