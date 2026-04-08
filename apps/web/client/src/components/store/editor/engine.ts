@@ -1,6 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
 import { CanvasManager } from './canvas';
+import { ElementsManager } from './element';
 import { FramesManager } from './frames';
 import { OverlayManager } from './overlay';
 import { StateManager } from './state';
@@ -11,6 +12,7 @@ export class EditorEngine {
     readonly canvas: CanvasManager = new CanvasManager(this);
     readonly frames: FramesManager = new FramesManager(this);
     readonly overlay: OverlayManager = new OverlayManager(this);
+    readonly elements: ElementsManager = new ElementsManager(this);
 
     constructor(projectId: string) {
         this.projectId = projectId;
