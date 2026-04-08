@@ -2,7 +2,7 @@
 import type { Frame } from '@mino/models';
 import type { PromisifiedPenpalChildMethods } from '@mino/penpal';
 import { FrameNavigationManager } from './navigation';
-import type { EditorEngine } from '..';
+import type { EditorEngine } from '../engine';
 import { makeAutoObservable } from 'mobx';
 import { debounce } from 'lodash';
 import { vanillaApi } from '@/trpc/vanilla';

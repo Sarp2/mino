@@ -1,0 +1,38 @@
+import { makeAutoObservable } from 'mobx';
+
+import { CanvasManager } from './canvas';
+import { FramesManager } from './frames';
+import { OverlayManager } from './overlay';
+import { StateManager } from './state';
+
+export class EditorEngine {
+    readonly projectId: string;
+    readonly state: StateManager = new StateManager();
+    readonly canvas: CanvasManager = new CanvasManager(this);
+    readonly frames: FramesManager = new FramesManager(this);
+    readonly overlay: OverlayManager = new OverlayManager(this);
+
+    constructor(projectId: string) {
+        this.projectId = projectId;
+        makeAutoObservable(this);
+    }
+
+    init() {
+        // TODO: Implement it
+    }
+
+    clear() {
+        this.state.clear();
+        this.canvas.clear();
+    }
+
+    async refreshLayers() {
+        for (const frame of this.frames.getAll()) {
+            if (!frame.view) {
+                console.error('No frame view found');
+                continue;
+            }
+            await frame.view.processDom();
+        }
+    }
+}
