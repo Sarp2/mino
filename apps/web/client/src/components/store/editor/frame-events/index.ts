@@ -30,8 +30,7 @@ export class FrameEventManager {
     private async undebouncedHandleWindowMutated() {
         try {
             await this.editorEngine.refreshLayers();
-            // TODO: Uncomment it out when OverlayManager is finished
-            //await this.editorEngine.overlay.refresh();
+            await this.editorEngine.overlay.refresh();
             await this.validateAndCleanSelections();
         } catch (error) {
             console.error('Error handling window mutation: ', error);
@@ -115,8 +114,7 @@ export class FrameEventManager {
 
     async handleWindowResized(): Promise<void> {
         try {
-            // TODO: Uncomment it out when OverlayManager is finished
-            // await this.editorEngine.overlay.refresh();
+            await this.editorEngine.overlay.refresh();
         } catch (error) {
             console.error('Error handling window resize: ', error);
         }
@@ -136,16 +134,44 @@ export class FrameEventManager {
                 return;
             }
 
-            // TODO: Uncomment those out when OverlayManager and ASTManager are finished
+            // TODO: Uncomment it when and ASTManager is done
             // this.editorEngine.ast.setMapRoot(frameId, data.rootNode, layerMapConverted);
-            // await this.editorEngine.overlay.refresh();
+
+            await this.editorEngine.overlay.refresh();
         } catch (error) {
             console.error('Error handling DOM processed: ', error);
         }
     }
 
     private async validateAndCleanSelections(): Promise<void> {
-        // TODO: Finish it when ElementsManager is finished
+        const selectedElements = this.editorEngine.elements.selected;
+        const stillValidElements = await Promise.all(
+            selectedElements.map(async (el) => {
+                const frameData = this.editorEngine.frames.get(el.frameId);
+                if (!frameData?.view) {
+                    console.error('No frame view found');
+                    return null;
+                }
+
+                try {
+                    const domEl = await frameData.view.getElementByDomId(
+                        el.domId,
+                        false,
+                    );
+                    return domEl ? el : null;
+                } catch {
+                    return null;
+                }
+            }),
+        );
+
+        const validElements = stillValidElements.filter(
+            (el): el is (typeof selectedElements)[0] => el !== null,
+        );
+
+        if (validElements.length !== selectedElements.length) {
+            this.editorEngine.elements.click(validElements);
+        }
     }
 
     clear() {
