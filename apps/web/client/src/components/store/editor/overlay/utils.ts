@@ -41,7 +41,7 @@ export function getRelativeOffset(element: HTMLElement, ancestor: HTMLElement) {
 export function adaptRectToCanvas(
     rect: RectDimensions,
     frameView: IframeView,
-    inverse: false,
+    inverse = false,
 ): RectDimensions {
     const canvasContainer = document.getElementById(
         EditorAttributes.CANVAS_CONTAINER,
