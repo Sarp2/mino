@@ -8,6 +8,7 @@ export enum EditorAttributes {
     DATA_MINO_DRAG_START_POSITION = 'data-mino-drag-start-position',
     DATA_MINO_DRAGGING = 'data-mino-dragging',
     DATA_MINO_DRAG_DIRECTION = 'data-mino-drag-direction',
+    CANVAS_CONTAINER = 'canvas-container',
 
     DATA_MINO_DYNAMIC_TYPE = 'data-mino-dynamic-type',
     DATA_MINO_CORE_ELEMENT_TYPE = 'data-mino-core-element-type',
