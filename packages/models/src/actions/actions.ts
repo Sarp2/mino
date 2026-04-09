@@ -1,5 +1,5 @@
 import type { ActionLocation } from './location';
-import type { ActionTarget } from './target';
+import type { ActionTarget, StyleActionTarget } from './target';
 
 export interface EditTextResult {
     originalContent: string;
@@ -17,6 +17,11 @@ interface BaseActionElement {
 
 export interface ActionElement extends BaseActionElement {
     children: ActionElement[];
+}
+
+export interface UpdateStyleAction {
+    type: 'update-style';
+    targets: StyleActionTarget[];
 }
 
 export interface PasteParams {
