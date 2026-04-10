@@ -226,7 +226,6 @@ export class MoveManager {
                 if (res && savedState.originalIndex !== null) {
                     const { child, parent, newIndex } = res;
                     if (newIndex !== savedState.originalIndex) {
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
                         const moveAction = this.createMoveAction(
                             frameData.frame.id,
                             child,
@@ -235,8 +234,7 @@ export class MoveManager {
                             savedState.originalIndex,
                         );
 
-                        // TODO: Uncomment it out when ActionManager is done
-                        //await this.editorEngine.action.run(moveAction);
+                        await this.editorEngine.action.run(moveAction);
                     }
                 }
             }
@@ -310,7 +308,6 @@ export class MoveManager {
             if (newIndex === currentIndex) return;
 
             // Create and run move action
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const moveAction = this.createMoveAction(
                 frameData.frame.id,
                 element,
@@ -318,8 +315,7 @@ export class MoveManager {
                 newIndex,
                 currentIndex,
             );
-            // TODO: Uncomment it out when ActionManager is done
-            // await this.editorEngine.action.run(moveAction);
+            await this.editorEngine.action.run(moveAction);
         } catch (error) {
             console.error('Error shifting element: ', error);
         }
