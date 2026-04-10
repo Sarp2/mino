@@ -1,5 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
+import { ActionManager } from './action';
 import { CanvasManager } from './canvas';
 import { ElementsManager } from './element';
 import { FramesManager } from './frames';
@@ -17,6 +18,7 @@ export class EditorEngine {
     readonly elements: ElementsManager = new ElementsManager(this);
     readonly style: StyleManager = new StyleManager(this);
     readonly history: HistoryManager = new HistoryManager(this);
+    readonly action: ActionManager = new ActionManager(this);
 
     constructor(projectId: string) {
         this.projectId = projectId;
