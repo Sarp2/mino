@@ -1,0 +1,340 @@
+import type {
+    Action,
+    ActionElement,
+    Change,
+    GroupElementsAction,
+    IndexActionLocation,
+    InsertElementAction,
+    RemoveElementAction,
+    UngroupElementsAction,
+    UpdateStyleAction,
+    WriteCodeAction,
+} from '@mino/models';
+
+import { createDomId, createOid } from '@mino/utility';
+import { EditorAttributes } from '@mino/web-preload/src/constants';
+import { assertNever } from '@mino/web-preload/src/helpers';
+
+export function reverse<T>(change: Change<T>): Change<T> {
+    return { updated: change.original, original: change.updated };
+}
+
+/** Reverses a style action by swapping original ↔ updated on every target. */
+export function reverseMoveLocation(
+    location: IndexActionLocation,
+): IndexActionLocation {
+    return {
+        ...location,
+        index: location.originalIndex,
+        originalIndex: location.index,
+    };
+}
+
+/** Reverses a style action by swapping original ↔ updated on every target. */
+export function reverseStyleAction(
+    action: UpdateStyleAction,
+): UpdateStyleAction {
+    return {
+        ...action,
+        targets: action.targets.map((target) => ({
+            ...target,
+            change: reverse(target.change),
+        })),
+    };
+}
+
+/** Reverses a write-code action by swapping original ↔ generated on every diff. */
+export function reverseWriteCodeAction(
+    action: WriteCodeAction,
+): WriteCodeAction {
+    return {
+        ...action,
+        diffs: action.diffs.map((diff) => ({
+            ...diff,
+            original: diff.generated,
+            generated: diff.orignal,
+        })),
+    };
+}
+
+/** Converts any action into its opposite — insert ↔ remove, group↔ungroup, style/move/text swap their values. */
+export function undoAction(action: Action): Action {
+    switch (action.type) {
+        case 'update-style':
+            return reverseStyleAction(action);
+        case 'insert-element':
+            // eslint-disable-next-line no-case-declarations
+            const removeAction: RemoveElementAction = {
+                type: 'remove-element',
+                targets: action.targets ? [...action.targets] : [],
+                location: {
+                    ...action.location,
+                },
+                element: getCleanedElement(
+                    action.element,
+                    action.element.domId,
+                    action.element.oid,
+                ),
+                editText: null,
+                pasteParams: null,
+                codeBlock: null,
+            };
+            return removeAction;
+        case 'remove-element':
+            // eslint-disable-next-line no-case-declarations
+            const insertAction: InsertElementAction = {
+                type: 'insert-element',
+                targets: action.targets ? [...action.targets] : [],
+                location: {
+                    ...action.location,
+                },
+                element: getCleanedElement(
+                    action.element,
+                    action.element.domId,
+                    action.element.oid,
+                ),
+                editText: action.editText,
+                pasteParams: action.pasteParams
+                    ? { ...action.pasteParams }
+                    : null,
+                codeBlock: action.codeBlock,
+            };
+            return insertAction;
+        case 'move-element':
+            return {
+                ...action,
+                location: reverseMoveLocation(action.location),
+            };
+        case 'edit-text':
+            return {
+                ...action,
+                originalContent: action.newContent,
+                newContent: action.originalContent,
+            };
+        case 'group-elements':
+            // eslint-disable-next-line no-case-declarations
+            const ungroupAction: UngroupElementsAction = {
+                type: 'ungroup-elements',
+                parent: {
+                    ...action.parent,
+                },
+                container: {
+                    ...action.container,
+                    attributes: {
+                        ...action.container.attributes,
+                    },
+                },
+                children: action.children.map((child) => ({
+                    frameId: child.frameId,
+                    branchId: child.branchId,
+                    domId: child.domId,
+                    oid: child.oid,
+                })),
+            };
+            return ungroupAction;
+        case 'ungroup-elements':
+            // eslint-disable-next-line no-case-declarations
+            const groupAction: GroupElementsAction = {
+                type: 'group-elements',
+                parent: {
+                    ...action.parent,
+                },
+                container: {
+                    ...action.container,
+                    attributes: {
+                        ...action.container.attributes,
+                    },
+                },
+                children: action.children.map((child) => ({
+                    frameId: child.frameId,
+                    branchId: child.branchId,
+                    domId: child.domId,
+                    oid: child.oid,
+                })),
+            };
+            return groupAction;
+        case 'write-code':
+            return reverseWriteCodeAction(action);
+        case 'insert-image':
+            return {
+                ...action,
+                type: 'remove-image',
+            };
+        case 'remove-image':
+            return {
+                ...action,
+                type: 'insert-image',
+            };
+        default:
+            assertNever(action);
+    }
+}
+
+/** Merges a new style action into an existing transaction's action list, combining targets and style changes to avoid duplicate entries. */
+function handleUpdateStyleAction(
+    actions: Action[],
+    existingActionIndex: number,
+    newAction: UpdateStyleAction,
+): Action[] {
+    const existingAction = actions[existingActionIndex] as UpdateStyleAction;
+    const mergedTargets = [...existingAction.targets];
+
+    for (const newTarget of newAction.targets) {
+        const existingTarget = mergedTargets.find(
+            (et) => et.domId === newTarget.domId,
+        );
+
+        if (existingTarget) {
+            existingTarget.change = {
+                updated: {
+                    ...existingTarget.change.updated,
+                    ...newTarget.change.updated,
+                },
+                original: {
+                    ...existingTarget.change.original,
+                    ...newTarget.change.original,
+                },
+            };
+        } else {
+            mergedTargets.push(newTarget);
+        }
+    }
+
+    return actions.map((a, i) =>
+        i === existingActionIndex
+            ? { type: 'update-style', targets: mergedTargets }
+            : a,
+    );
+}
+
+/** Adds or merges an action into a transaction's action list. Style actions get merged; other types replace the existing one of the same type. */
+export function updateTransactionActions(
+    actions: Action[],
+    newAction: Action,
+): Action[] {
+    const existingActionIndex = actions.findIndex(
+        (a) => a.type === newAction.type,
+    );
+
+    if (existingActionIndex === -1) return [...actions, newAction];
+
+    if (newAction.type === 'update-style') {
+        return handleUpdateStyleAction(actions, existingActionIndex, newAction);
+    }
+    return actions.map((a, i) => (i === existingActionIndex ? newAction : a));
+}
+
+/** Strips an ActionElement down to essential attributes and recursively assigns fresh domId/oid to all children (for clean insert/remove roundtrips). */
+export function getCleanedElement(
+    copiedEl: ActionElement,
+    domId: string,
+    oid: string,
+): ActionElement {
+    const cleanedEl: ActionElement = {
+        tagName: copiedEl.tagName,
+        attributes: {
+            class: copiedEl.attributes.class ?? '',
+            [EditorAttributes.DATA_MINO_DOM_ID]: domId,
+            [EditorAttributes.DATA_MINO_ID]: oid,
+            [EditorAttributes.DATA_MINO_INSERTED]: 'true',
+        },
+        styles: { ...copiedEl.styles },
+        textContent: copiedEl.textContent,
+        children: [],
+        domId,
+        oid,
+        branchId: copiedEl.branchId,
+    };
+
+    // Process children recursively
+    if (copiedEl.children?.length) {
+        cleanedEl.children = copiedEl.children.map(
+            (child: ActionElement): ActionElement => {
+                const newChildDomId = createDomId();
+                const newChildOid = createOid();
+                return getCleanedElement(child, newChildDomId, newChildOid);
+            },
+        );
+    }
+
+    return cleanedEl;
+}
+
+/** Deep-clones an action for the redo stack so mutations to the original don't affect the copy. */
+export function transformRedoAction(action: Action): Action {
+    switch (action.type) {
+        case 'insert-element':
+        case 'remove-element':
+            return {
+                type: action.type,
+                targets: action.targets ? [...action.targets] : [],
+                location: { ...action.location },
+                element: getCleanedElement(
+                    action.element,
+                    action.element.domId,
+                    action.element.oid,
+                ),
+                editText: action.editText,
+                pasteParams: action.pasteParams,
+                codeBlock: action.codeBlock,
+            };
+        case 'group-elements':
+        case 'ungroup-elements':
+            return {
+                type: action.type,
+                parent: { ...action.parent },
+                container: {
+                    ...action.container,
+                    attributes: { ...action.container.attributes },
+                },
+                children: action.children.map((child) => ({
+                    frameId: child.frameId,
+                    branchId: child.branchId,
+                    domId: child.domId,
+                    oid: child.oid,
+                })),
+            };
+        case 'update-style':
+            return {
+                type: 'update-style',
+                targets: action.targets.map((target) => ({
+                    ...target,
+                    change: {
+                        updated: { ...target.change.updated },
+                        original: { ...target.change.original },
+                    },
+                })),
+            };
+        case 'move-element':
+            return {
+                type: 'move-element',
+                targets: action.targets ? [...action.targets] : [],
+                location: { ...action.location },
+            };
+        case 'edit-text':
+            return {
+                type: 'edit-text',
+                targets: action.targets ? [...action.targets] : [],
+                originalContent: action.originalContent,
+                newContent: action.newContent,
+            };
+        case 'write-code':
+            return {
+                type: 'write-code',
+                diffs: action.diffs.map((diff) => ({
+                    ...diff,
+                    original: diff.orignal,
+                    generated: diff.generated,
+                })),
+            };
+        case 'insert-image':
+        case 'remove-image':
+            return {
+                ...action,
+                type:
+                    action.type === 'insert-image'
+                        ? 'remove-image'
+                        : 'insert-image',
+            };
+    }
+}
