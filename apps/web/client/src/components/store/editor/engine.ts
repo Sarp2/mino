@@ -3,8 +3,10 @@ import { makeAutoObservable } from 'mobx';
 import { CanvasManager } from './canvas';
 import { ElementsManager } from './element';
 import { FramesManager } from './frames';
+import { HistoryManager } from './history';
 import { OverlayManager } from './overlay';
 import { StateManager } from './state';
+import { StyleManager } from './style';
 
 export class EditorEngine {
     readonly projectId: string;
@@ -13,6 +15,8 @@ export class EditorEngine {
     readonly frames: FramesManager = new FramesManager(this);
     readonly overlay: OverlayManager = new OverlayManager(this);
     readonly elements: ElementsManager = new ElementsManager(this);
+    readonly style: StyleManager = new StyleManager(this);
+    readonly history: HistoryManager = new HistoryManager(this);
 
     constructor(projectId: string) {
         this.projectId = projectId;
