@@ -1,3 +1,17 @@
+import { customAlphabet } from 'nanoid';
+
+export const VALID_DATA_ATTR_CHARS = 'abcdefghijklmnopqrstuvwxyz0123456789-._:';
+
+const generateCustomId = customAlphabet(VALID_DATA_ATTR_CHARS, 7);
+
+export function createDomId(): string {
+    return `odid*${generateCustomId()}`;
+}
+
+export function createOid(): string {
+    return `${generateCustomId()}`;
+}
+
 export function shortenUuid(uuid: string, maxLength: number): string {
     if (!Number.isInteger(maxLength) || maxLength <= 0) {
         throw new Error('maxLength must be a positive integer');
