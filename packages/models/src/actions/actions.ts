@@ -1,4 +1,5 @@
-import type { ActionLocation } from './location';
+import type { CodeDiff } from '../code/index';
+import type { ActionLocation, IndexActionLocation } from './location';
 import type { ActionTarget, StyleActionTarget } from './target';
 
 export interface EditTextResult {
@@ -24,6 +25,11 @@ export interface UpdateStyleAction {
     targets: StyleActionTarget[];
 }
 
+export interface WriteCodeAction {
+    type: 'write-code';
+    diffs: CodeDiff[];
+}
+
 export interface PasteParams {
     oid: string;
     domId: string;
@@ -47,9 +53,70 @@ export interface RemoveElementAction extends BaseInsertRemoveAction {
     type: 'remove-element';
 }
 
+export interface MoveElementAction {
+    type: 'move-element';
+    targets: ActionTarget[];
+    location: IndexActionLocation;
+}
+
+export interface EditTextAction {
+    type: 'edit-text';
+    targets: ActionTarget[];
+    originalContent: string;
+    newContent: string;
+}
+
 export interface GroupContainer {
     domId: string;
     oid: string;
     tagName: string;
     attributes: Record<string, string>;
 }
+
+// Reversible group and ungroup actions
+export interface BaseGroupAction {
+    type: string;
+    parent: ActionTarget;
+    children: ActionTarget[];
+    container: GroupContainer;
+}
+
+export interface GroupElementsAction extends BaseGroupAction {
+    type: 'group-elements';
+}
+
+export interface UngroupElementsAction extends BaseGroupAction {
+    type: 'ungroup-elements';
+}
+
+export interface ImageContentData {
+    orignalPath: string;
+    content: string;
+    fileName: string;
+    mimeType: string;
+}
+
+interface BaseImageAction {
+    targets: ActionTarget[];
+    image: ImageContentData;
+}
+
+export interface InsertImageAction extends BaseImageAction {
+    type: 'insert-image';
+}
+
+export interface RemoveImageAction extends BaseImageAction {
+    type: 'remove-image';
+}
+
+export type Action =
+    | UpdateStyleAction
+    | InsertElementAction
+    | RemoveElementAction
+    | MoveElementAction
+    | EditTextAction
+    | GroupElementsAction
+    | UngroupElementsAction
+    | WriteCodeAction
+    | InsertImageAction
+    | RemoveImageAction;
