@@ -48,14 +48,14 @@ export class StyleManager {
 
     updateCustom(style: string, value: string, domIds: string[] = []) {
         const styleObj = { [style]: value };
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const action = this.getUpdateStyleAction(
             styleObj,
             domIds,
             StyleChangeType.Custom,
         );
-        // TODO: Uncomment it out when ActionManager is done.
-        // this.editorEngine.action.run(action);
+
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.editorEngine.action.run(action);
         this.updateStyleNoAction(styleObj);
     }
 
@@ -64,17 +64,15 @@ export class StyleManager {
     }
 
     updateMultiple(styles: Record<string, string>) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const action = this.getUpdateStyleAction(styles);
-        // TODO: Uncomment it out when ActionManager is done.
-        // this.editorEngine.action.run(action);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.editorEngine.action.run(action);
         this.updateStyleNoAction(styles);
     }
 
     updateFontFamily(style: string, value: Font) {
         const styleObj = { [style]: value.id };
         const action = this.getUpdateStyleAction(styleObj);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const formattedAction = {
             ...action,
             targets: action.targets.map((val) => ({
@@ -105,8 +103,8 @@ export class StyleManager {
                 },
             })),
         };
-        // TODO: Uncomment it out when ActionManager is done.
-        // this.editorEngine.action.run(formattedAction);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        this.editorEngine.action.run(formattedAction);
     }
 
     getUpdateStyleAction(
@@ -134,10 +132,9 @@ export class StyleManager {
                         Object.keys(styles).map((style) => [
                             style,
                             {
-                                value:
-                                    styles[
-                                        style as keyof CSSProperties
-                                    ]?.toString() ?? '',
+                                value: String(
+                                    styles[style as keyof CSSProperties] ?? '',
+                                ),
                                 type:
                                     type === StyleChangeType.Custom
                                         ? StyleChangeType.Custom
@@ -149,10 +146,11 @@ export class StyleManager {
                         Object.keys(styles).map((style) => [
                             style,
                             {
-                                value:
+                                value: String(
                                     selectedEl.styles?.defined[style] ??
-                                    selectedEl.styles?.computed[style] ??
-                                    '',
+                                        selectedEl.styles?.computed[style] ??
+                                        '',
+                                ),
                                 type: StyleChangeType.Value,
                             },
                         ]),
