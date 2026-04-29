@@ -2,7 +2,7 @@ import { debounce } from 'lodash';
 import { makeAutoObservable } from 'mobx';
 
 import type { Canvas, RectPosition } from '@mino/models';
-import type { EditorEngine } from '../index';
+import type { EditorEngine } from '../engine';
 
 import { DefaultDesktopFrame } from '@mino/db';
 

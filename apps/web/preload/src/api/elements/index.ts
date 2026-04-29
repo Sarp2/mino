@@ -74,8 +74,8 @@ export function getParentElement(domId: string) {
 /** Returns the number of direct child elements */
 export function getChildrenCount(domId: string) {
     const el = getHTMLElement(domId);
-    if (!el?.parentElement) return null;
 
+    if (!el) return 0;
     return el.children.length;
 }
 
